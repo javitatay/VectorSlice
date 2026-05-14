@@ -3,7 +3,7 @@
 **Convierte vectores de Illustrator en Slices de Resolume Arena.**  
 Sin redibujar. Sin plugins. Abre el archivo en el navegador y listo.
 
-🔗 **[Abrir VectorSlice →](https://javitatay.github.io/vectorslice/)**
+🔗 **[Abrir VectorSlice →](https://javitatay.github.io/VectorSlice/)**
 
 ---
 
