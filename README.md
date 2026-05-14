@@ -44,9 +44,12 @@ Click en **Exportar XML**. Se descarga un archivo listo para Resolume.
 
 ### 5. Importa en Resolume Arena
 
-`Advanced Output → click derecho → Import Layout → selecciona el XML`
+Copia el archivo `.xml` generado a la carpeta de presets de Resolume:
 
-Los Slices aparecen con los nombres de tus capas de Illustrator.
+- **Mac:** `~/Documents/Resolume Arena/presets/screensetup/`
+- **Windows:** `C:\Users\[usuario]\Documents\Resolume Arena 7\presets\screensetup\`
+
+Reinicia Resolume Arena (o recarga el Advanced Output). El preset aparecerá en la lista de Screen Setups con el nombre `VectorSlice Output` y los slices con los nombres de tus capas de Illustrator.
 
 ---
 

@@ -733,21 +733,145 @@ function exportXML(){
   const outW=parseFloat(document.getElementById('opt-w').value)||svgVB.w;
   const outH=parseFloat(document.getElementById('opt-h').value)||svgVB.h;
   const scaleX=outW/svgVB.w, scaleY=outH/svgVB.h;
-  const lines=[
-    `<?xml version="1.0" encoding="UTF-8"?>`,
-    `<!-- VectorSlice · Javier Tatay Rubio · javitatay.github.io -->`,
-    `<!-- Resolume Arena Advanced Output · ${new Date().toISOString()} -->`,
-    `<AdvancedOutput>`,`  <Slices>`
-  ];
-  slices.forEach((s,i)=>{
-    lines.push(`    <Slice name="${xe(s.name)}" id="${i}">`);
-    lines.push(`      <Points>`);
-    s.points.forEach(p=>lines.push(`        <Point x="${r2(p.x*scaleX)}" y="${r2(p.y*scaleY)}"/>`));
-    lines.push(`      </Points>`);
-    lines.push(`    </Slice>`);
-  });
-  lines.push(`  </Slices>`,`</AdvancedOutput>`);
-  const blob=new Blob([lines.join('\n')],{type:'application/xml'});
+  const uid=()=>Date.now()+Math.floor(Math.random()*100000);
+  const screenId=uid();
+
+  const paramRange=(name,val,min,max)=>`
+				<ParamRange name="${name}" T="DOUBLE" default="${val}" value="${val}">
+					<PhaseSourceStatic name="PhaseSourceStatic"/>
+					<BehaviourDouble name="BehaviourDouble"/>
+					<ValueRange name="defaultRange" min="${min}" max="${max}"/>
+					<ValueRange name="minMax" min="${min}" max="${max}"/>
+					<ValueRange name="startStop" min="${min}" max="${max}"/>
+				</ParamRange>`;
+
+  const colorParams=()=>
+    paramRange('Brightness',0,-1,1)+
+    paramRange('Contrast',0,-1,1)+
+    paramRange('Red',0,-1,1)+
+    paramRange('Green',0,-1,1)+
+    paramRange('Blue',0,-1,1);
+
+  const blackParams=()=>
+    paramRange('BRed',0,0,0.4)+
+    paramRange('BGreen',0,0,0.4)+
+    paramRange('BBlue',0,0,0.4);
+
+  const sliceXML=(s)=>{
+    // Calcular bounding box del polígono
+    const xs=s.points.map(p=>r2(p.x*scaleX));
+    const ys=s.points.map(p=>r2(p.y*scaleY));
+    const minX=Math.min(...xs), minY=Math.min(...ys);
+    const maxX=Math.max(...xs), maxY=Math.max(...ys);
+    const w=r2(maxX-minX), h=r2(maxY-minY);
+
+    // Los 4 vértices del bounding rect (esquina TL, TR, BR, BL)
+    const vRect=[
+      {x:minX,y:minY},{x:maxX,y:minY},
+      {x:maxX,y:maxY},{x:minX,y:maxY}
+    ];
+
+    // BezierWarper: grid 4x4 interpolado sobre el bounding rect
+    const bezierVerts=()=>{
+      let v='';
+      for(let row=0;row<4;row++){
+        for(let col=0;col<4;col++){
+          const t=col/3, u=row/3;
+          const bx=r2(minX+w*t);
+          const by=r2(minY+h*u);
+          v+=`\n\t\t\t\t\t\t\t<v x="${bx}" y="${by}"/>`;
+        }
+      }
+      return v;
+    };
+
+    const verts=(pts)=>pts.map(p=>`\n\t\t\t\t\t\t<v x="${p.x}" y="${p.y}"/>`).join('');
+
+    return `
+			<Slice uniqueId="${uid()}">
+				<Params name="Common">
+					<Param name="Name" T="STRING" default="Layer" value="${xe(s.name)}"/>
+					<Param name="Enabled" T="BOOL" default="1" value="1"/>
+				</Params>
+				<Params name="Input">
+					<ParamChoice name="Input Source" default="0:1" value="0:1" storeChoices="0"/>
+					<Param name="Input Opacity" T="BOOL" default="1" value="1"/>
+					<Param name="Input Bypass/Solo" T="BOOL" default="1" value="1"/>
+					<Param name="SoftEdgeEnable" T="BOOL" default="0" value="0"/>
+				</Params>
+				<Params name="Output">
+					<Param name="Flip" T="UINT8" default="0" value="0"/>${colorParams()}
+					<Param name="Is Key" T="BOOL" default="0" value="0"/>
+					<Param name="Black BG" T="BOOL" default="0" value="0"/>${blackParams()}
+				</Params>
+				<InputRect orientation="0">${verts(vRect)}
+				</InputRect>
+				<OutputRect orientation="0">${verts(vRect)}
+				</OutputRect>
+				<Warper>
+					<Params name="Warper">
+						<ParamChoice name="Point Mode" default="PM_LINEAR" value="PM_LINEAR" storeChoices="0"/>
+						<Param name="Flip" T="UINT8" default="0" value="0"/>
+					</Params>
+					<BezierWarper controlWidth="4" controlHeight="4">
+						<vertices>${bezierVerts()}
+						</vertices>
+					</BezierWarper>
+					<Homography>
+						<src>${verts(vRect)}
+						</src>
+						<dst>${verts(vRect)}
+						</dst>
+					</Homography>
+				</Warper>
+			</Slice>`;
+  };
+
+  const xml=`<?xml version="1.0" encoding="utf-8"?>
+<XmlState name="VectorSlice">
+	<versionInfo name="Resolume Arena" majorVersion="7" minorVersion="26" microVersion="1" revision="7833"/>
+	<ScreenSetup name="ScreenSetup">
+		<Params name="ScreenSetupParams"/>
+		<CurrentCompositionTextureSize width="${outW}" height="${outH}"/>
+		<screens>
+			<Screen name="VectorSlice Output" uniqueId="${screenId}">
+				<Params name="Params">
+					<Param name="Name" T="STRING" default="" value="VectorSlice Output"/>
+					<Param name="Enabled" T="BOOL" default="1" value="1"/>
+					<Param name="Hidden" T="BOOL" default="0" value="0"/>
+				</Params>
+				<Params name="Output">${paramRange('Opacity',1,0,1)}${colorParams()}
+				</Params>
+				<guides>
+					<ScreenGuide name="ScreenGuide" type="0">
+						<Params name="Params">
+							<ParamPixels name="Image"/>${paramRange('Opacity',0.25,0,1)}
+						</Params>
+					</ScreenGuide>
+					<ScreenGuide name="ScreenGuide" type="1">
+						<Params name="Params">
+							<ParamPixels name="Image"/>${paramRange('Opacity',0.25,0,1)}
+						</Params>
+					</ScreenGuide>
+				</guides>
+				<layers>${slices.map(s=>sliceXML(s)).join('')}
+				</layers>
+				<OutputDevice>
+					<OutputDeviceVirtual name="VectorSlice Output" deviceId="VirtualScreen 1" idHash="10094742552620344504" width="${outW}" height="${outH}">
+						<Params name="Params">${paramRange('Width',outW,1,32768)}${paramRange('Height',outH,1,32768)}
+						</Params>
+					</OutputDeviceVirtual>
+				</OutputDevice>
+			</Screen>
+		</screens>
+		<SoftEdging>
+			<Params name="Soft Edge">${paramRange('Gamma Red',2,1,3)}${paramRange('Gamma Green',2,1,3)}${paramRange('Gamma Blue',2,1,3)}${paramRange('Gamma',1,0,1)}${paramRange('Luminance',0.5,0,1)}${paramRange('Power',2,0.1,7)}
+			</Params>
+		</SoftEdging>
+	</ScreenSetup>
+</XmlState>`;
+
+  const blob=new Blob([xml],{type:'application/xml'});
   const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:`vectorslice_${Date.now()}.xml`});
   a.click();URL.revokeObjectURL(a.href);
   setStatus(`✓ ${slices.length} slice${slices.length!==1?'s':''} exportados.`,'ok');
