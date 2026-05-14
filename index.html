@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="Javier Tatay Rubio">
+<meta name="description" content="Convierte vectores SVG de Illustrator en Slices de Resolume Arena. Sin instalación, directo en el navegador.">
+<title>VectorSlice — SVG to Resolume Arena</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #1a1d1a;
+  --surface:   #212421;
+  --border:    #2e322e;
+  --accent:    #4d9962;
+  --accent-lt: #1e2b20;
+  --accent-dk: #6abf7e;
+  --muted:     #6b706b;
+  --text:      #d8ddd8;
+  --text-dim:  #8a908a;
+  --danger:    #c0392b;
+  --mono:      'JetBrains Mono', monospace;
+  --sans:      'Inter', sans-serif;
+  --radius:    4px;
+}
+
+html, body { height: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* HEADER */
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-mark {
+  width: 28px;
+  height: 28px;
+  background: var(--accent);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.logo-mark svg { width: 14px; height: 14px; fill: white; }
+
+.logo-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+
+.logo-sep { color: var(--border); margin: 0 2px; }
+
+.logo-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.header-meta {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  text-align: right;
+  line-height: 1.7;
+}
+
+/* MAIN */
+main {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  overflow: hidden;
+}
+
+/* SIDEBAR */
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.section-header {
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.section-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--muted);
+}
+
+.pill {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 2px 8px;
+  background: var(--accent-lt);
+  color: var(--accent-dk);
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+/* DROP ZONE */
+#dropzone {
+  margin: 16px;
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 24px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+
+#dropzone:hover,
+#dropzone.drag-over {
+  border-color: var(--accent);
+  background: var(--accent-lt);
+}
+
+.drop-icon { width: 28px; height: 28px; margin: 0 auto 10px; opacity: 0.25; }
+
+.drop-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.drop-hint {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+}
+
+#file-input { display: none; }
+
+/* SLICES LIST */
+.slices-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 16px 16px;
+}
+
+.empty-msg {
+  padding: 32px 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+.slice-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  margin-bottom: 2px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.slice-item:hover  { background: var(--bg); }
+.slice-item.active { background: var(--accent-lt); }
+
+.slice-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.slice-info { flex: 1; min-width: 0; }
+
+.slice-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.slice-pts {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+.slice-del {
+  background: none;
+  border: none;
+  color: var(--border);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 0 3px;
+  transition: color 0.1s;
+  opacity: 0;
+  flex-shrink: 0;
+}
+
+.slice-item:hover .slice-del { opacity: 1; }
+.slice-del:hover { color: var(--danger); }
+
+/* CONTENT */
+.content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* PREVIEW */
+.preview-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  overflow: hidden;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-color: var(--bg);
+}
+
+#preview-canvas {
+  border-radius: var(--radius);
+  box-shadow: 0 1px 8px rgba(0,0,0,0.07);
+  display: block;
+}
+
+.preview-empty {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 2;
+}
+
+.preview-empty svg {
+  width: 36px;
+  height: 36px;
+  opacity: 0.15;
+  display: block;
+  margin: 0 auto 14px;
+}
+
+/* OPTIONS BAR */
+.options-bar {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 11px 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.opt-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.opt-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+input[type="number"] {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 5px 8px;
+  border-radius: var(--radius);
+  width: 62px;
+  transition: border-color 0.15s;
+}
+
+input[type="number"]:focus { outline: none; border-color: var(--accent); }
+
+/* FOOTER */
+footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 0 32px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+  min-width: 0;
+}
+
+#status {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+#status.ok  { color: var(--accent-dk); }
+#status.err { color: var(--danger); }
+
+.footer-author {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.footer-author:hover {
+  border-color: var(--accent);
+  color: var(--accent-dk);
+}
+
+.btn-row { display: flex; gap: 8px; flex-shrink: 0; }
+
+button {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 7px 16px;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  line-height: 1;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-dk);
+  border-color: var(--accent-dk);
+}
+
+.btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-dim);
+  border-color: var(--border);
+}
+
+.btn-ghost:hover { border-color: var(--muted); color: var(--text); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+@media (max-width: 700px) {
+  main { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .sidebar { border-right: none; border-bottom: 1px solid var(--border); max-height: 42vh; }
+  .header-meta { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 16 16"><path d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9l3 3-3 3V9z"/></svg>
+    </div>
+    <span class="logo-name">VectorSlice</span>
+    <span class="logo-sep">·</span>
+    <span class="logo-sub">SVG → Resolume Arena</span>
+  </div>
+
+</header>
+
+<main>
+
+  <div class="sidebar">
+    <div class="section-header">
+      <span class="section-title">Slices</span>
+      <span class="pill" id="count-pill">0</span>
+    </div>
+
+    <div id="dropzone" onclick="document.getElementById('file-input').click()">
+      <svg class="drop-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M14 4v16M8 14l6 6 6-6M4 24h20" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="drop-title">Arrastra el SVG aquí</div>
+      <div class="drop-hint">o haz click para seleccionar</div>
+    </div>
+    <input type="file" id="file-input" accept=".svg">
+
+    <div class="slices-list" id="slices-list">
+      <div class="empty-msg">Importa un SVG para<br>ver los slices detectados</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="section-header" style="background:var(--surface);">
+      <span class="section-title">Preview</span>
+      <span class="pill" id="preview-dim">—</span>
+    </div>
+
+    <div class="preview-area" id="preview-area">
+      <div class="preview-empty">
+        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2">
+          <rect x="4" y="4" width="14" height="14" rx="1"/>
+          <rect x="22" y="4" width="14" height="14" rx="1"/>
+          <rect x="4" y="22" width="14" height="14" rx="1"/>
+          <path d="M22 29h14M29 22v14" stroke-linecap="round"/>
+        </svg>
+        El preview aparecerá aquí<br>tras importar un SVG
+      </div>
+    </div>
+
+    <div class="options-bar">
+      <div class="opt-group">
+        <span class="opt-label">Subdivisión de curvas</span>
+        <input type="number" id="opt-sub" value="8" min="2" max="32" title="Segmentos por curva Bezier">
+      </div>
+      <div class="opt-group">
+        <span class="opt-label">Resolución de salida</span>
+        <input type="number" id="opt-w" value="1920" min="1" title="Ancho (px)">
+        <span class="opt-label">×</span>
+        <input type="number" id="opt-h" value="1080" min="1" title="Alto (px)">
+        <span class="opt-label">px</span>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-left">
+    <div id="status">Importa un SVG para comenzar.</div>
+    <a class="footer-author" href="https://javitatay.github.io" target="_blank">javitatay.github.io</a>
+  </div>
+  <div class="btn-row">
+    <button class="btn-ghost" onclick="clearAll()">Limpiar</button>
+    <button class="btn-primary" id="btn-export" onclick="exportXML()" disabled>Exportar XML</button>
+  </div>
+</footer>
+
+<script>
+// ── STATE ──
+let slices = [];
+let svgVB  = { x:0, y:0, w:1920, h:1080 };
+
+const PALETTE = [
+  '#3d7a4e','#2c8a5a','#4a9465','#1f6b42',
+  '#5aac7a','#327a58','#6bbf8a','#256647',
+  '#3d8c60','#4fa070','#28724e','#57b07d'
+];
+
+// ── DROP / FILE ──
+const dz = document.getElementById('dropzone');
+const fi = document.getElementById('file-input');
+
+dz.addEventListener('dragover',  e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', ()  => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f) loadFile(f);
+});
+fi.addEventListener('change', e => { if (e.target.files[0]) loadFile(e.target.files[0]); });
+
+function loadFile(file) {
+  if (!file.name.toLowerCase().endsWith('.svg')) {
+    setStatus('Solo se aceptan archivos .svg', 'err'); return;
+  }
+  const r = new FileReader();
+  r.onload = e => parseSVG(e.target.result);
+  r.readAsText(file);
+}
+
+// ── PARSE SVG ──
+function parseSVG(text) {
+  const doc   = new DOMParser().parseFromString(text, 'image/svg+xml');
+  const svgEl = doc.querySelector('svg');
+  if (!svgEl) { setStatus('SVG inválido.', 'err'); return; }
+
+  const vb = svgEl.getAttribute('viewBox');
+  if (vb) {
+    const p = vb.trim().split(/[\s,]+/).map(Number);
+    if (p.length === 4) svgVB = { x:p[0], y:p[1], w:p[2], h:p[3] };
+  } else {
+    svgVB.w = parseFloat(svgEl.getAttribute('width'))  || 1920;
+    svgVB.h = parseFloat(svgEl.getAttribute('height')) || 1080;
+  }
+  document.getElementById('opt-w').value = Math.round(svgVB.w);
+  document.getElementById('opt-h').value = Math.round(svgVB.h);
+
+  slices = [];
+  let idx = 0;
+  doc.querySelectorAll('path,rect,polygon,polyline,ellipse,circle').forEach(el => {
+    const pts = extractPoints(el);
+    if (pts && pts.length >= 3) {
+      slices.push({ id:idx, name:getName(el,idx), points:pts, color:PALETTE[idx%PALETTE.length] });
+      idx++;
+    }
+  });
+
+  if (!slices.length) { setStatus('No se encontraron shapes válidos.', 'err'); return; }
+  setStatus(`${slices.length} slice${slices.length!==1?'s':''} detectados.`, 'ok');
+  renderList(); renderPreview();
+  document.getElementById('btn-export').disabled = false;
+}
+
+function getName(el, i) {
+  const raw = el.getAttribute('id')
+    || el.getAttribute('inkscape:label')
+    || el.getAttribute('data-name')
+    || el.getAttribute('class')?.split(' ')[0]
+    || '';
+  return sanitize(raw, i);
+}
+
+// ── EXTRACT POINTS ──
+function extractPoints(el) {
+  const tag  = el.tagName.toLowerCase();
+  const subs = parseInt(document.getElementById('opt-sub').value) || 8;
+
+  if (tag === 'rect') {
+    const x=+el.getAttribute('x')||0, y=+el.getAttribute('y')||0;
+    const w=+el.getAttribute('width')||0, h=+el.getAttribute('height')||0;
+    const rx=+el.getAttribute('rx')||0;
+    if (w<=0||h<=0) return null;
+    if (rx>0) return rectRounded(x,y,w,h,rx,subs);
+    return [{x,y},{x:x+w,y},{x:x+w,y:y+h},{x,y:y+h}];
+  }
+  if (tag==='circle') {
+    const cx=+el.getAttribute('cx')||0, cy=+el.getAttribute('cy')||0, r=+el.getAttribute('r')||0;
+    return ellipsePts(cx,cy,r,r,subs*4);
+  }
+  if (tag==='ellipse') {
+    const cx=+el.getAttribute('cx')||0, cy=+el.getAttribute('cy')||0;
+    const rx=+el.getAttribute('rx')||0, ry=+el.getAttribute('ry')||0;
+    return ellipsePts(cx,cy,rx,ry,subs*4);
+  }
+  if (tag==='polygon'||tag==='polyline') return parsePoly(el.getAttribute('points')||'');
+  if (tag==='path') return parsePath(el.getAttribute('d')||'', subs);
+  return null;
+}
+
+function rectRounded(x,y,w,h,r,subs) {
+  const pts=[],n=Math.max(4,subs);
+  const arc=(cx,cy,a0,a1)=>{ for(let i=0;i<=n;i++){const a=a0+(a1-a0)*(i/n); pts.push({x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)});} };
+  arc(x+r,y+r,Math.PI,Math.PI*1.5); arc(x+w-r,y+r,Math.PI*1.5,Math.PI*2);
+  arc(x+w-r,y+h-r,0,Math.PI*.5); arc(x+r,y+h-r,Math.PI*.5,Math.PI);
+  return pts;
+}
+
+function ellipsePts(cx,cy,rx,ry,n) {
+  const pts=[];
+  for(let i=0;i<n;i++){const a=(2*Math.PI*i)/n; pts.push({x:cx+rx*Math.cos(a),y:cy+ry*Math.sin(a)});}
+  return pts;
+}
+
+function parsePoly(str) {
+  const n=str.trim().split(/[\s,]+/).map(Number),p=[];
+  for(let i=0;i+1<n.length;i+=2) p.push({x:n[i],y:n[i+1]});
+  return p.length>=3?p:null;
+}
+
+// ── PATH PARSER ──
+function parsePath(d,subs) {
+  const pts=[];
+  let cx=0,cy=0,mx=0,my=0,lc=null;
+  const tk=d.match(/[MmZzLlHhVvCcSsQqTt]|[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?/g)||[];
+  let i=0,cmd='M';
+  const get=n=>{const r=[];for(let k=0;k<n;k++)r.push(parseFloat(tk[i++]||0));return r;};
+  while(i<tk.length){
+    if(/[MmZzLlHhVvCcSsQqTt]/.test(tk[i])){cmd=tk[i++];}
+    switch(cmd){
+      case 'M':{const[x,y]=get(2);cx=x;cy=y;mx=x;my=y;pts.push({x,y});cmd='L';break;}
+      case 'm':{const[dx,dy]=get(2);cx+=dx;cy+=dy;mx=cx;my=cy;pts.push({x:cx,y:cy});cmd='l';break;}
+      case 'L':{const[x,y]=get(2);cx=x;cy=y;pts.push({x,y});break;}
+      case 'l':{const[dx,dy]=get(2);cx+=dx;cy+=dy;pts.push({x:cx,y:cy});break;}
+      case 'H':{const[x]=get(1);cx=x;pts.push({x:cx,y:cy});break;}
+      case 'h':{const[dx]=get(1);cx+=dx;pts.push({x:cx,y:cy});break;}
+      case 'V':{const[y]=get(1);cy=y;pts.push({x:cx,y:cy});break;}
+      case 'v':{const[dy]=get(1);cy+=dy;pts.push({x:cx,y:cy});break;}
+      case 'Z':case 'z':cx=mx;cy=my;i++;break;
+      case 'C':{const[x1,y1,x2,y2,x,y]=get(6);cubicB({x:cx,y:cy},{x:x1,y:y1},{x:x2,y:y2},{x,y},subs).forEach(p=>pts.push(p));lc={x:x2,y:y2};cx=x;cy=y;break;}
+      case 'c':{const[dx1,dy1,dx2,dy2,dx,dy]=get(6);cubicB({x:cx,y:cy},{x:cx+dx1,y:cy+dy1},{x:cx+dx2,y:cy+dy2},{x:cx+dx,y:cy+dy},subs).forEach(p=>pts.push(p));lc={x:cx+dx2,y:cy+dy2};cx+=dx;cy+=dy;break;}
+      case 'S':{const[x2,y2,x,y]=get(4);const c1=lc?{x:2*cx-lc.x,y:2*cy-lc.y}:{x:cx,y:cy};cubicB({x:cx,y:cy},c1,{x:x2,y:y2},{x,y},subs).forEach(p=>pts.push(p));lc={x:x2,y:y2};cx=x;cy=y;break;}
+      case 's':{const[dx2,dy2,dx,dy]=get(4);const c1=lc?{x:2*cx-lc.x,y:2*cy-lc.y}:{x:cx,y:cy};cubicB({x:cx,y:cy},c1,{x:cx+dx2,y:cy+dy2},{x:cx+dx,y:cy+dy},subs).forEach(p=>pts.push(p));lc={x:cx+dx2,y:cy+dy2};cx+=dx;cy+=dy;break;}
+      case 'Q':{const[x1,y1,x,y]=get(4);quadB({x:cx,y:cy},{x:x1,y:y1},{x,y},subs).forEach(p=>pts.push(p));cx=x;cy=y;break;}
+      case 'q':{const[dx1,dy1,dx,dy]=get(4);quadB({x:cx,y:cy},{x:cx+dx1,y:cy+dy1},{x:cx+dx,y:cy+dy},subs).forEach(p=>pts.push(p));cx+=dx;cy+=dy;break;}
+      default:i++;
+    }
+  }
+  return pts.length>=3?pts:null;
+}
+
+function cubicB(p0,p1,p2,p3,n){const r=[];for(let i=1;i<=n;i++){const t=i/n,m=1-t;r.push({x:m**3*p0.x+3*m**2*t*p1.x+3*m*t**2*p2.x+t**3*p3.x,y:m**3*p0.y+3*m**2*t*p1.y+3*m*t**2*p2.y+t**3*p3.y});}return r;}
+function quadB(p0,p1,p2,n){const r=[];for(let i=1;i<=n;i++){const t=i/n,m=1-t;r.push({x:m**2*p0.x+2*m*t*p1.x+t**2*p2.x,y:m**2*p0.y+2*m*t*p1.y+t**2*p2.y});}return r;}
+
+// ── RENDER LIST ──
+function renderList() {
+  const list=document.getElementById('slices-list');
+  document.getElementById('count-pill').textContent=slices.length;
+  if(!slices.length){list.innerHTML='<div class="empty-msg">Importa un SVG para<br>ver los slices detectados</div>';return;}
+  list.innerHTML=slices.map((s,i)=>`
+    <div class="slice-item" data-id="${s.id}" onclick="highlight(${i})">
+      <div class="slice-dot" style="background:${s.color}"></div>
+      <div class="slice-info">
+        <div class="slice-name">${esc(s.name)}</div>
+        <div class="slice-pts">${s.points.length} puntos</div>
+      </div>
+      <button class="slice-del" onclick="removeSlice(event,${i})">×</button>
+    </div>`).join('');
+}
+
+// ── RENDER PREVIEW ──
+function renderPreview() {
+  const area=document.getElementById('preview-area');
+  if(!slices.length){
+    area.innerHTML=`<div class="preview-empty"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="4" y="4" width="14" height="14" rx="1"/><rect x="22" y="4" width="14" height="14" rx="1"/><rect x="4" y="22" width="14" height="14" rx="1"/><path d="M22 29h14M29 22v14" stroke-linecap="round"/></svg>El preview aparecerá aquí<br>tras importar un SVG</div>`;
+    document.getElementById('preview-dim').textContent='—';return;
+  }
+  let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+  slices.forEach(s=>s.points.forEach(p=>{minX=Math.min(minX,p.x);minY=Math.min(minY,p.y);maxX=Math.max(maxX,p.x);maxY=Math.max(maxY,p.y);}));
+  const dW=maxX-minX||1,dH=maxY-minY||1;
+  const aW=area.clientWidth-64,aH=area.clientHeight-64;
+  const sc=Math.min(aW/dW,aH/dH)*0.95;
+  const cW=Math.round(dW*sc),cH=Math.round(dH*sc);
+  let canvas=document.getElementById('preview-canvas');
+  if(!canvas){canvas=document.createElement('canvas');canvas.id='preview-canvas';}
+  canvas.width=cW;canvas.height=cH;
+  area.innerHTML='';area.appendChild(canvas);
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#212421';ctx.fillRect(0,0,cW,cH);
+  slices.forEach(s=>{
+    if(s.points.length<2)return;
+    ctx.beginPath();
+    s.points.forEach((p,i)=>{const sx=(p.x-minX)*sc,sy=(p.y-minY)*sc;i===0?ctx.moveTo(sx,sy):ctx.lineTo(sx,sy);});
+    ctx.closePath();
+    ctx.fillStyle=s.color+'30';ctx.strokeStyle=s.color;ctx.lineWidth=1.5;
+    ctx.fill();ctx.stroke();
+    const cx=s.points.reduce((a,p)=>a+p.x,0)/s.points.length;
+    const cy=s.points.reduce((a,p)=>a+p.y,0)/s.points.length;
+    ctx.fillStyle=s.color;ctx.font=`500 10px 'JetBrains Mono',monospace`;
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(s.name,(cx-minX)*sc,(cy-minY)*sc);
+  });
+  document.getElementById('preview-dim').textContent=`${Math.round(dW)} × ${Math.round(dH)} px`;
+}
+
+// ── INTERACTIONS ──
+function highlight(i){
+  document.querySelectorAll('.slice-item').forEach(el=>el.classList.remove('active'));
+  const el=document.querySelector(`.slice-item[data-id="${slices[i].id}"]`);
+  if(el)el.classList.add('active');
+}
+
+function removeSlice(e,i){
+  e.stopPropagation();slices.splice(i,1);renderList();renderPreview();
+  if(!slices.length){document.getElementById('btn-export').disabled=true;setStatus('Sin slices. Importa un SVG.','');}
+  else setStatus(`${slices.length} slice${slices.length!==1?'s':''} restantes.`,'ok');
+}
+
+function clearAll(){
+  slices=[];renderList();renderPreview();
+  document.getElementById('btn-export').disabled=true;
+  document.getElementById('file-input').value='';
+  setStatus('Importa un SVG para comenzar.','');
+}
+
+// ── EXPORT XML ──
+function exportXML(){
+  if(!slices.length){setStatus('No hay slices para exportar.','err');return;}
+  const outW=parseFloat(document.getElementById('opt-w').value)||svgVB.w;
+  const outH=parseFloat(document.getElementById('opt-h').value)||svgVB.h;
+  const scaleX=outW/svgVB.w, scaleY=outH/svgVB.h;
+  const lines=[
+    `<?xml version="1.0" encoding="UTF-8"?>`,
+    `<!-- VectorSlice · Javier Tatay Rubio · javitatay.github.io -->`,
+    `<!-- Resolume Arena Advanced Output · ${new Date().toISOString()} -->`,
+    `<AdvancedOutput>`,`  <Slices>`
+  ];
+  slices.forEach((s,i)=>{
+    lines.push(`    <Slice name="${xe(s.name)}" id="${i}">`);
+    lines.push(`      <Points>`);
+    s.points.forEach(p=>lines.push(`        <Point x="${r2(p.x*scaleX)}" y="${r2(p.y*scaleY)}"/>`));
+    lines.push(`      </Points>`);
+    lines.push(`    </Slice>`);
+  });
+  lines.push(`  </Slices>`,`</AdvancedOutput>`);
+  const blob=new Blob([lines.join('\n')],{type:'application/xml'});
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:`vectorslice_${Date.now()}.xml`});
+  a.click();URL.revokeObjectURL(a.href);
+  setStatus(`✓ ${slices.length} slice${slices.length!==1?'s':''} exportados.`,'ok');
+}
+
+// ── UTILS ──
+function sanitize(s,i){const c=String(s).replace(/[^a-zA-Z0-9_\-]/g,'_').replace(/^_+|_+$/g,'');return c||`SCREEN_${String(i+1).padStart(2,'0')}`;}
+function xe(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function r2(n){return Math.round(n*100)/100;}
+function setStatus(msg,type=''){const el=document.getElementById('status');el.textContent=msg;el.className=type;}
+
+window.addEventListener('resize',()=>{if(slices.length)renderPreview();});
+</script>
+</body>
+</html>
