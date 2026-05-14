@@ -504,6 +504,7 @@ button {
 // ── STATE ──
 let slices = [];
 let svgVB  = { x:0, y:0, w:1920, h:1080 };
+let svgFileName = 'vectorslice';
 
 const PALETTE = [
   '#3d7a4e','#2c8a5a','#4a9465','#1f6b42',
@@ -528,6 +529,7 @@ function loadFile(file) {
   if (!file.name.toLowerCase().endsWith('.svg')) {
     setStatus('Solo se aceptan archivos .svg', 'err'); return;
   }
+  svgFileName = file.name.replace(/\.svg$/i, '');
   const r = new FileReader();
   r.onload = e => parseSVG(e.target.result);
   r.readAsText(file);
@@ -831,7 +833,7 @@ ${v4}
   const screenId=uid();
   const xml=
 `<?xml version="1.0" encoding="utf-8"?>
-<XmlState name="VectorSlice">
+<XmlState name="${svgFileName}">
 \t<versionInfo name="Resolume Arena" majorVersion="7" minorVersion="26" microVersion="1" revision="7833"/>
 \t<ScreenSetup name="ScreenSetup">
 \t\t<Params name="ScreenSetupParams"/>
@@ -940,7 +942,7 @@ ${slices.map(s=>sliceXML(s)).join('\n')}
 </XmlState>`;
 
   const blob=new Blob([xml],{type:'application/xml'});
-  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:`vectorslice_${Date.now()}.xml`});
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:`${svgFileName}.xml`});
   a.click();URL.revokeObjectURL(a.href);
   setStatus(`✓ ${slices.length} slice${slices.length!==1?'s':''} exportados.`,'ok');
 }

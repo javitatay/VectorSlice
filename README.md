@@ -40,7 +40,7 @@ Arrastra el `.svg` a la zona de drop. VectorSlice detecta automáticamente todos
 
 ### 4. Exporta el XML
 
-Click en **Exportar XML**. Se descarga un archivo listo para Resolume.
+Click en **Exportar XML**. Se descarga un archivo `.xml` con el mismo nombre que el SVG importado (ej: `mi_mapping.svg` → `mi_mapping.xml`).
 
 ### 5. Importa en Resolume Arena
 
@@ -49,7 +49,7 @@ Copia el archivo `.xml` generado a la carpeta de presets de Resolume:
 - **Mac:** `~/Documents/Resolume Arena/presets/screensetup/`
 - **Windows:** `C:\Users\[usuario]\Documents\Resolume Arena 7\presets\screensetup\`
 
-Reinicia Resolume Arena (o recarga el Advanced Output). El preset aparecerá en la lista de Screen Setups con el nombre `VectorSlice Output` y los slices con los nombres de tus capas de Illustrator.
+Reinicia Resolume Arena. El preset aparecerá en la lista de Screen Setups con el nombre de tu archivo SVG, y cada Slice con el nombre de su capa correspondiente.
 
 ---
 
