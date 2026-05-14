@@ -942,8 +942,14 @@ ${slices.map(s=>sliceXML(s)).join('\n')}
 </XmlState>`;
 
   const blob=new Blob([xml],{type:'application/xml'});
-  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:`${svgFileName}.xml`});
-  a.click();URL.revokeObjectURL(a.href);
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`${svgFileName}.xml`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
   setStatus(`✓ ${slices.length} slice${slices.length!==1?'s':''} exportados.`,'ok');
 }
 
