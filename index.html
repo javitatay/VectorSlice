@@ -50,48 +50,18 @@ header {
   align-items: center;
   justify-content: space-between;
 }
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
+.logo { display: flex; align-items: center; gap: 12px; }
 .logo-mark {
-  width: 28px;
-  height: 28px;
+  width: 28px; height: 28px;
   background: var(--accent);
   border-radius: 3px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
-
 .logo-mark svg { width: 14px; height: 14px; fill: white; }
-
-.logo-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text);
-  letter-spacing: -0.2px;
-}
-
-.logo-sep { color: var(--border); margin: 0 2px; }
-
-.logo-sub {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--muted);
-}
-
-.header-meta {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text-dim);
-  text-align: right;
-  line-height: 1.7;
-}
+.logo-name { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: -0.2px; }
+.logo-sep  { color: var(--border); margin: 0 2px; }
+.logo-sub  { font-family: var(--mono); font-size: 11px; color: var(--muted); }
 
 /* MAIN */
 main {
@@ -112,28 +82,19 @@ main {
 .section-header {
   padding: 13px 20px;
   border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between;
   flex-shrink: 0;
 }
-
 .section-title {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.6px;
   color: var(--muted);
 }
-
 .pill {
-  font-family: var(--mono);
-  font-size: 10px;
+  font-family: var(--mono); font-size: 10px;
   padding: 2px 8px;
-  background: var(--accent-lt);
-  color: var(--accent-dk);
-  border-radius: 10px;
-  font-weight: 500;
+  background: var(--accent-lt); color: var(--accent-dk);
+  border-radius: 10px; font-weight: 500;
 }
 
 /* DROP ZONE */
@@ -147,263 +108,192 @@ main {
   transition: border-color 0.15s, background 0.15s;
   flex-shrink: 0;
 }
-
-#dropzone:hover,
-#dropzone.drag-over {
-  border-color: var(--accent);
-  background: var(--accent-lt);
+#dropzone:hover, #dropzone.drag-over {
+  border-color: var(--accent); background: var(--accent-lt);
 }
-
 .drop-icon { width: 28px; height: 28px; margin: 0 auto 10px; opacity: 0.25; }
-
-.drop-title {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text);
-  margin-bottom: 4px;
-}
-
-.drop-hint {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--muted);
-}
-
+.drop-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+.drop-hint  { font-family: var(--mono); font-size: 10px; color: var(--muted); }
 #file-input { display: none; }
 
 /* SLICES LIST */
 .slices-list {
-  flex: 1;
-  overflow-y: auto;
+  flex: 1; overflow-y: auto;
   padding: 8px 16px 16px;
 }
-
 .empty-msg {
-  padding: 32px 0;
-  text-align: center;
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.9;
+  padding: 32px 0; text-align: center;
+  color: var(--muted); font-size: 12px; line-height: 1.9;
 }
 
+/* SLICE ITEM */
 .slice-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 8px;
   border-radius: var(--radius);
   margin-bottom: 2px;
   cursor: pointer;
   transition: background 0.1s;
+  user-select: none;
 }
-
 .slice-item:hover  { background: var(--bg); }
 .slice-item.active { background: var(--accent-lt); }
+.slice-item.drag-src      { opacity: 0.35; }
+.slice-item.drag-over-top { border-top: 2px solid var(--accent); }
+.slice-item.drag-over-bot { border-bottom: 2px solid var(--accent); }
 
-.slice-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
+.drag-handle {
+  color: var(--border); cursor: grab;
+  font-size: 14px; line-height: 1;
+  padding: 0 2px; flex-shrink: 0;
+  transition: color 0.1s;
 }
+.slice-item:hover .drag-handle { color: var(--muted); }
+.drag-handle:active { cursor: grabbing; }
+
+.slice-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+.slice-eye {
+  background: none; border: none;
+  cursor: pointer; font-size: 13px; line-height: 1;
+  padding: 0 2px; flex-shrink: 0;
+  transition: color 0.1s; opacity: 0;
+  color: var(--muted);
+}
+.slice-item:hover .slice-eye,
+.slice-item.active .slice-eye { opacity: 1; }
+.slice-eye.eye-off { opacity: 1 !important; color: var(--danger) !important; }
 
 .slice-info { flex: 1; min-width: 0; }
 
 .slice-name {
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 500;
+  font-family: var(--mono); font-size: 12px; font-weight: 500;
   color: var(--text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-
+.slice-name-input {
+  font-family: var(--mono); font-size: 12px; font-weight: 500;
+  color: var(--text); background: var(--bg);
+  border: 1px solid var(--accent); border-radius: 2px;
+  padding: 1px 5px; width: 100%; outline: none;
+}
 .slice-pts {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--muted);
-  margin-top: 1px;
+  font-family: var(--mono); font-size: 10px;
+  color: var(--muted); margin-top: 1px;
 }
 
 .slice-del {
-  background: none;
-  border: none;
-  color: var(--border);
-  cursor: pointer;
-  font-size: 16px;
-  line-height: 1;
-  padding: 0 3px;
-  transition: color 0.1s;
-  opacity: 0;
-  flex-shrink: 0;
+  background: none; border: none; color: var(--border);
+  cursor: pointer; font-size: 16px; line-height: 1;
+  padding: 0 3px; transition: color 0.1s;
+  opacity: 0; flex-shrink: 0;
 }
-
 .slice-item:hover .slice-del { opacity: 1; }
 .slice-del:hover { color: var(--danger); }
 
 /* CONTENT */
-.content {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
+.content { display: flex; flex-direction: column; overflow: hidden; }
 
 /* PREVIEW */
 .preview-area {
   flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 32px;
-  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  padding: 32px; overflow: hidden;
   background-image:
     linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
   background-size: 24px 24px;
   background-color: var(--bg);
+  position: relative;
 }
+#preview-canvas { border-radius: var(--radius); box-shadow: 0 1px 8px rgba(0,0,0,0.07); display: block; }
+.preview-empty { text-align: center; color: var(--muted); font-size: 12px; line-height: 2; }
+.preview-empty svg { width: 36px; height: 36px; opacity: 0.15; display: block; margin: 0 auto 14px; }
 
-#preview-canvas {
-  border-radius: var(--radius);
-  box-shadow: 0 1px 8px rgba(0,0,0,0.07);
-  display: block;
-}
-
-.preview-empty {
-  text-align: center;
+#overlay-btn {
+  position: absolute; top: 12px; right: 12px;
+  background: var(--surface); border: 1px solid var(--border);
   color: var(--muted);
-  font-size: 12px;
-  line-height: 2;
+  font-family: var(--mono); font-size: 10px;
+  padding: 4px 10px; border-radius: var(--radius);
+  cursor: pointer; transition: all 0.15s; display: none;
 }
-
-.preview-empty svg {
-  width: 36px;
-  height: 36px;
-  opacity: 0.15;
-  display: block;
-  margin: 0 auto 14px;
-}
+#overlay-btn:hover { border-color: var(--accent); color: var(--accent-dk); }
+#overlay-btn.active { border-color: var(--accent); color: var(--accent-dk); background: var(--accent-lt); }
 
 /* OPTIONS BAR */
 .options-bar {
-  background: var(--surface);
-  border-top: 1px solid var(--border);
+  background: var(--surface); border-top: 1px solid var(--border);
   padding: 11px 24px;
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  flex-wrap: wrap;
-  flex-shrink: 0;
+  display: flex; align-items: center; gap: 24px; flex-wrap: wrap; flex-shrink: 0;
 }
-
-.opt-group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.opt-label {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--muted);
-  white-space: nowrap;
-}
+.opt-group { display: flex; align-items: center; gap: 8px; }
+.opt-label { font-size: 11px; font-weight: 500; color: var(--muted); white-space: nowrap; }
 
 input[type="number"] {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--mono);
-  font-size: 12px;
-  padding: 5px 8px;
-  border-radius: var(--radius);
-  width: 62px;
+  background: var(--bg); border: 1px solid var(--border);
+  color: var(--text); font-family: var(--mono); font-size: 12px;
+  padding: 5px 8px; border-radius: var(--radius); width: 62px;
   transition: border-color 0.15s;
 }
-
 input[type="number"]:focus { outline: none; border-color: var(--accent); }
 
 /* FOOTER */
 footer {
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-  padding: 0 32px;
-  height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  background: var(--surface); border-top: 1px solid var(--border);
+  padding: 0 32px; height: 52px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
 }
-
-.footer-left {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  flex: 1;
-  min-width: 0;
-}
-
-#status {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--muted);
-}
-
+.footer-left { display: flex; align-items: center; gap: 20px; flex: 1; min-width: 0; }
+#status { font-family: var(--mono); font-size: 11px; color: var(--muted); }
 #status.ok  { color: var(--accent-dk); }
 #status.err { color: var(--danger); }
 
 .footer-author {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text-dim);
-  white-space: nowrap;
-  border: 1px solid var(--border);
-  padding: 4px 10px;
-  border-radius: var(--radius);
-  text-decoration: none;
-  transition: border-color 0.15s, color 0.15s;
+  font-family: var(--mono); font-size: 10px; color: var(--text-dim);
+  white-space: nowrap; border: 1px solid var(--border);
+  padding: 4px 10px; border-radius: var(--radius);
+  text-decoration: none; transition: border-color 0.15s, color 0.15s;
 }
-
-.footer-author:hover {
-  border-color: var(--accent);
-  color: var(--accent-dk);
-}
+.footer-author:hover { border-color: var(--accent); color: var(--accent-dk); }
 
 .btn-row { display: flex; gap: 8px; flex-shrink: 0; }
 
 button {
-  font-family: var(--sans);
-  font-size: 12px;
-  font-weight: 500;
-  padding: 7px 16px;
-  border-radius: var(--radius);
-  border: 1px solid transparent;
-  cursor: pointer;
-  transition: all 0.15s;
-  line-height: 1;
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  padding: 7px 16px; border-radius: var(--radius);
+  border: 1px solid transparent; cursor: pointer; transition: all 0.15s; line-height: 1;
 }
-
-.btn-primary {
-  background: var(--accent);
-  color: white;
-  border-color: var(--accent);
-}
-
-.btn-primary:hover:not(:disabled) {
-  background: var(--accent-dk);
-  border-color: var(--accent-dk);
-}
-
+.btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
+.btn-primary:hover:not(:disabled) { background: var(--accent-dk); border-color: var(--accent-dk); }
 .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
-
-.btn-ghost {
-  background: transparent;
-  color: var(--text-dim);
-  border-color: var(--border);
-}
-
+.btn-ghost { background: transparent; color: var(--text-dim); border-color: var(--border); }
 .btn-ghost:hover { border-color: var(--muted); color: var(--text); }
+
+/* EXPORT DROPDOWN */
+.export-wrap { position: relative; }
+.export-menu {
+  display: none; position: absolute;
+  bottom: calc(100% + 6px); right: 0;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  min-width: 200px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  z-index: 100;
+}
+.export-menu.open { display: block; }
+.export-opt {
+  display: block; width: 100%; text-align: left;
+  padding: 10px 14px; background: none; border: none; border-radius: 0;
+  color: var(--text); font-size: 12px; cursor: pointer;
+  border-bottom: 1px solid var(--border);
+}
+.export-opt:last-child { border-bottom: none; }
+.export-opt:hover { background: var(--accent-lt); color: var(--accent-dk); }
+.export-opt-sub {
+  display: block; font-family: var(--mono); font-size: 10px;
+  color: var(--muted); margin-top: 2px;
+}
 
 /* SCROLLBAR */
 ::-webkit-scrollbar { width: 4px; }
@@ -414,7 +304,6 @@ button {
 @media (max-width: 700px) {
   main { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
   .sidebar { border-right: none; border-bottom: 1px solid var(--border); max-height: 42vh; }
-  .header-meta { display: none; }
 }
 </style>
 </head>
@@ -429,11 +318,9 @@ button {
     <span class="logo-sep">·</span>
     <span class="logo-sub">SVG → Resolume Arena</span>
   </div>
-
 </header>
 
 <main>
-
   <div class="sidebar">
     <div class="section-header">
       <span class="section-title">Slices</span>
@@ -470,23 +357,23 @@ button {
         </svg>
         El preview aparecerá aquí<br>tras importar un SVG
       </div>
+      <button id="overlay-btn" onclick="toggleOverlay()">Overlay res.</button>
     </div>
 
     <div class="options-bar">
       <div class="opt-group">
         <span class="opt-label">Subdivisión de curvas</span>
-        <input type="number" id="opt-sub" value="8" min="2" max="32" title="Segmentos por curva Bezier">
+        <input type="number" id="opt-sub" value="8" min="2" max="32">
       </div>
       <div class="opt-group">
         <span class="opt-label">Resolución de salida</span>
-        <input type="number" id="opt-w" value="1920" min="1" title="Ancho (px)">
+        <input type="number" id="opt-w" value="1920" min="1">
         <span class="opt-label">×</span>
-        <input type="number" id="opt-h" value="1080" min="1" title="Alto (px)">
+        <input type="number" id="opt-h" value="1080" min="1">
         <span class="opt-label">px</span>
       </div>
     </div>
   </div>
-
 </main>
 
 <footer>
@@ -496,15 +383,31 @@ button {
   </div>
   <div class="btn-row">
     <button class="btn-ghost" onclick="clearAll()">Limpiar</button>
-    <button class="btn-primary" id="btn-export" onclick="exportXML()" disabled>Exportar XML</button>
+    <div class="export-wrap">
+      <button class="btn-primary" id="btn-export" onclick="toggleExportMenu()" disabled>Exportar ▾</button>
+      <div class="export-menu" id="export-menu">
+        <button class="export-opt" onclick="doExport('screensetup')">
+          Screen Setup XML
+          <span class="export-opt-sub">Advanced Output → Import Layout</span>
+        </button>
+        <button class="export-opt" onclick="doExport('composition')">
+          Composition Preset XML
+          <span class="export-opt-sub">Composición → preset de pantalla</span>
+        </button>
+      </div>
+    </div>
   </div>
 </footer>
 
 <script>
-// ── STATE ──
-let slices = [];
-let svgVB  = { x:0, y:0, w:1920, h:1080 };
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+let slices      = [];
+let svgVB       = { x:0, y:0, w:1920, h:1080 };
 let svgFileName = 'vectorslice';
+let activeIdx   = -1;
+let showOverlay = false;
 
 const PALETTE = [
   '#3d7a4e','#2c8a5a','#4a9465','#1f6b42',
@@ -512,7 +415,9 @@ const PALETTE = [
   '#3d8c60','#4fa070','#28724e','#57b07d'
 ];
 
-// ── DROP / FILE ──
+// ══════════════════════════════════════════════
+//  DROP / FILE
+// ══════════════════════════════════════════════
 const dz = document.getElementById('dropzone');
 const fi = document.getElementById('file-input');
 
@@ -535,7 +440,9 @@ function loadFile(file) {
   r.readAsText(file);
 }
 
-// ── PARSE SVG ──
+// ══════════════════════════════════════════════
+//  PARSE SVG
+// ══════════════════════════════════════════════
 function parseSVG(text) {
   const doc   = new DOMParser().parseFromString(text, 'image/svg+xml');
   const svgEl = doc.querySelector('svg');
@@ -552,20 +459,27 @@ function parseSVG(text) {
   document.getElementById('opt-w').value = Math.round(svgVB.w);
   document.getElementById('opt-h').value = Math.round(svgVB.h);
 
-  slices = [];
-  let idx = 0;
+  slices = []; let idx = 0;
   doc.querySelectorAll('path,rect,polygon,polyline,ellipse,circle').forEach(el => {
     const pts = extractPoints(el);
     if (pts && pts.length >= 3) {
-      slices.push({ id:idx, name:getName(el,idx), points:pts, color:PALETTE[idx%PALETTE.length] });
+      slices.push({
+        id: idx,
+        name: getName(el, idx),
+        points: pts,
+        color: PALETTE[idx % PALETTE.length],
+        visible: true
+      });
       idx++;
     }
   });
 
   if (!slices.length) { setStatus('No se encontraron shapes válidos.', 'err'); return; }
+  activeIdx = -1;
   setStatus(`${slices.length} slice${slices.length!==1?'s':''} detectados.`, 'ok');
   renderList(); renderPreview();
   document.getElementById('btn-export').disabled = false;
+  document.getElementById('overlay-btn').style.display = 'block';
 }
 
 function getName(el, i) {
@@ -577,12 +491,13 @@ function getName(el, i) {
   return sanitize(raw, i);
 }
 
-// ── EXTRACT POINTS ──
+// ══════════════════════════════════════════════
+//  EXTRACT POINTS
+// ══════════════════════════════════════════════
 function extractPoints(el) {
   const tag  = el.tagName.toLowerCase();
   const subs = parseInt(document.getElementById('opt-sub').value) || 8;
-
-  if (tag === 'rect') {
+  if (tag==='rect') {
     const x=+el.getAttribute('x')||0, y=+el.getAttribute('y')||0;
     const w=+el.getAttribute('width')||0, h=+el.getAttribute('height')||0;
     const rx=+el.getAttribute('rx')||0;
@@ -603,29 +518,24 @@ function extractPoints(el) {
   if (tag==='path') return parsePath(el.getAttribute('d')||'', subs);
   return null;
 }
-
-function rectRounded(x,y,w,h,r,subs) {
+function rectRounded(x,y,w,h,r,subs){
   const pts=[],n=Math.max(4,subs);
-  const arc=(cx,cy,a0,a1)=>{ for(let i=0;i<=n;i++){const a=a0+(a1-a0)*(i/n); pts.push({x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)});} };
+  const arc=(cx,cy,a0,a1)=>{for(let i=0;i<=n;i++){const a=a0+(a1-a0)*(i/n);pts.push({x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)});}};
   arc(x+r,y+r,Math.PI,Math.PI*1.5); arc(x+w-r,y+r,Math.PI*1.5,Math.PI*2);
   arc(x+w-r,y+h-r,0,Math.PI*.5); arc(x+r,y+h-r,Math.PI*.5,Math.PI);
   return pts;
 }
-
-function ellipsePts(cx,cy,rx,ry,n) {
+function ellipsePts(cx,cy,rx,ry,n){
   const pts=[];
-  for(let i=0;i<n;i++){const a=(2*Math.PI*i)/n; pts.push({x:cx+rx*Math.cos(a),y:cy+ry*Math.sin(a)});}
+  for(let i=0;i<n;i++){const a=(2*Math.PI*i)/n;pts.push({x:cx+rx*Math.cos(a),y:cy+ry*Math.sin(a)});}
   return pts;
 }
-
-function parsePoly(str) {
+function parsePoly(str){
   const n=str.trim().split(/[\s,]+/).map(Number),p=[];
-  for(let i=0;i+1<n.length;i+=2) p.push({x:n[i],y:n[i+1]});
+  for(let i=0;i+1<n.length;i+=2)p.push({x:n[i],y:n[i+1]});
   return p.length>=3?p:null;
 }
-
-// ── PATH PARSER ──
-function parsePath(d,subs) {
+function parsePath(d,subs){
   const pts=[];
   let cx=0,cy=0,mx=0,my=0,lc=null;
   const tk=d.match(/[MmZzLlHhVvCcSsQqTt]|[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?/g)||[];
@@ -654,132 +564,360 @@ function parsePath(d,subs) {
   }
   return pts.length>=3?pts:null;
 }
-
 function cubicB(p0,p1,p2,p3,n){const r=[];for(let i=1;i<=n;i++){const t=i/n,m=1-t;r.push({x:m**3*p0.x+3*m**2*t*p1.x+3*m*t**2*p2.x+t**3*p3.x,y:m**3*p0.y+3*m**2*t*p1.y+3*m*t**2*p2.y+t**3*p3.y});}return r;}
 function quadB(p0,p1,p2,n){const r=[];for(let i=1;i<=n;i++){const t=i/n,m=1-t;r.push({x:m**2*p0.x+2*m*t*p1.x+t**2*p2.x,y:m**2*p0.y+2*m*t*p1.y+t**2*p2.y});}return r;}
 
-// ── RENDER LIST ──
+// ══════════════════════════════════════════════
+//  RENDER LIST
+// ══════════════════════════════════════════════
+let dragSrcIdx = null;
+
 function renderList() {
-  const list=document.getElementById('slices-list');
-  document.getElementById('count-pill').textContent=slices.length;
-  if(!slices.length){list.innerHTML='<div class="empty-msg">Importa un SVG para<br>ver los slices detectados</div>';return;}
-  list.innerHTML=slices.map((s,i)=>`
-    <div class="slice-item" data-id="${s.id}" onclick="highlight(${i})">
-      <div class="slice-dot" style="background:${s.color}"></div>
+  const list = document.getElementById('slices-list');
+  document.getElementById('count-pill').textContent = slices.length;
+  if (!slices.length) {
+    list.innerHTML = '<div class="empty-msg">Importa un SVG para<br>ver los slices detectados</div>';
+    return;
+  }
+  list.innerHTML = slices.map((s, i) => `
+    <div class="slice-item${activeIdx===i?' active':''}"
+         data-idx="${i}" draggable="true"
+         onclick="handleItemClick(event,${i})">
+      <span class="drag-handle" title="Reordenar">⠿</span>
+      <div class="slice-dot" style="background:${s.color};opacity:${s.visible?1:0.3}"></div>
       <div class="slice-info">
-        <div class="slice-name">${esc(s.name)}</div>
+        <div class="slice-name" ondblclick="startRename(event,${i})"
+             style="opacity:${s.visible?1:0.4}">${esc(s.name)}</div>
         <div class="slice-pts">${s.points.length} puntos</div>
       </div>
+      <button class="slice-eye${!s.visible?' eye-off':''}"
+              title="${s.visible?'Ocultar':'Mostrar'}"
+              onclick="toggleVisible(event,${i})">${s.visible?'◉':'○'}</button>
       <button class="slice-del" onclick="removeSlice(event,${i})">×</button>
     </div>`).join('');
-}
 
-// ── RENDER PREVIEW ──
-function renderPreview() {
-  const area=document.getElementById('preview-area');
-  if(!slices.length){
-    area.innerHTML=`<div class="preview-empty"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="4" y="4" width="14" height="14" rx="1"/><rect x="22" y="4" width="14" height="14" rx="1"/><rect x="4" y="22" width="14" height="14" rx="1"/><path d="M22 29h14M29 22v14" stroke-linecap="round"/></svg>El preview aparecerá aquí<br>tras importar un SVG</div>`;
-    document.getElementById('preview-dim').textContent='—';return;
-  }
-  let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
-  slices.forEach(s=>s.points.forEach(p=>{minX=Math.min(minX,p.x);minY=Math.min(minY,p.y);maxX=Math.max(maxX,p.x);maxY=Math.max(maxY,p.y);}));
-  const dW=maxX-minX||1,dH=maxY-minY||1;
-  const aW=area.clientWidth-64,aH=area.clientHeight-64;
-  const sc=Math.min(aW/dW,aH/dH)*0.95;
-  const cW=Math.round(dW*sc),cH=Math.round(dH*sc);
-  let canvas=document.getElementById('preview-canvas');
-  if(!canvas){canvas=document.createElement('canvas');canvas.id='preview-canvas';}
-  canvas.width=cW;canvas.height=cH;
-  area.innerHTML='';area.appendChild(canvas);
-  const ctx=canvas.getContext('2d');
-  ctx.fillStyle='#212421';ctx.fillRect(0,0,cW,cH);
-  slices.forEach(s=>{
-    if(s.points.length<2)return;
-    ctx.beginPath();
-    s.points.forEach((p,i)=>{const sx=(p.x-minX)*sc,sy=(p.y-minY)*sc;i===0?ctx.moveTo(sx,sy):ctx.lineTo(sx,sy);});
-    ctx.closePath();
-    ctx.fillStyle=s.color+'30';ctx.strokeStyle=s.color;ctx.lineWidth=1.5;
-    ctx.fill();ctx.stroke();
-    const cx=s.points.reduce((a,p)=>a+p.x,0)/s.points.length;
-    const cy=s.points.reduce((a,p)=>a+p.y,0)/s.points.length;
-    ctx.fillStyle=s.color;ctx.font=`500 10px 'JetBrains Mono',monospace`;
-    ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText(s.name,(cx-minX)*sc,(cy-minY)*sc);
+  list.querySelectorAll('.slice-item').forEach(el => {
+    el.addEventListener('dragstart', onDragStart);
+    el.addEventListener('dragover',  onDragOver);
+    el.addEventListener('dragleave', onDragLeave);
+    el.addEventListener('drop',      onDrop);
+    el.addEventListener('dragend',   onDragEnd);
   });
-  document.getElementById('preview-dim').textContent=`${Math.round(dW)} × ${Math.round(dH)} px`;
 }
 
-// ── INTERACTIONS ──
-function highlight(i){
-  document.querySelectorAll('.slice-item').forEach(el=>el.classList.remove('active'));
-  const el=document.querySelector(`.slice-item[data-id="${slices[i].id}"]`);
-  if(el)el.classList.add('active');
+function handleItemClick(e, i) {
+  if (['slice-del','slice-eye','drag-handle','slice-name-input']
+      .some(c => e.target.classList.contains(c))) return;
+  activeIdx = (activeIdx === i) ? -1 : i;
+  renderList(); renderPreview();
 }
 
-function removeSlice(e,i){
-  e.stopPropagation();slices.splice(i,1);renderList();renderPreview();
-  if(!slices.length){document.getElementById('btn-export').disabled=true;setStatus('Sin slices. Importa un SVG.','');}
-  else setStatus(`${slices.length} slice${slices.length!==1?'s':''} restantes.`,'ok');
+// ── Drag & Drop ──
+function onDragStart(e) {
+  dragSrcIdx = +e.currentTarget.dataset.idx;
+  setTimeout(() => e.currentTarget.classList.add('drag-src'), 0);
+  e.dataTransfer.effectAllowed = 'move';
+}
+function onDragOver(e) {
+  e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+  const el = e.currentTarget;
+  const rect = el.getBoundingClientRect();
+  const mid  = rect.top + rect.height / 2;
+  el.classList.remove('drag-over-top','drag-over-bot');
+  el.classList.add(e.clientY < mid ? 'drag-over-top' : 'drag-over-bot');
+}
+function onDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over-top','drag-over-bot');
+}
+function onDrop(e) {
+  e.preventDefault();
+  const targetIdx = +e.currentTarget.dataset.idx;
+  const rect = e.currentTarget.getBoundingClientRect();
+  const before = e.clientY < rect.top + rect.height / 2;
+  e.currentTarget.classList.remove('drag-over-top','drag-over-bot');
+  if (dragSrcIdx === null || dragSrcIdx === targetIdx) return;
+  const moved = slices.splice(dragSrcIdx, 1)[0];
+  let insertAt = targetIdx > dragSrcIdx ? targetIdx - 1 : targetIdx;
+  if (!before) insertAt++;
+  slices.splice(Math.min(insertAt, slices.length), 0, moved);
+  activeIdx = slices.indexOf(moved);
+  renderList(); renderPreview();
+}
+function onDragEnd(e) {
+  e.currentTarget.classList.remove('drag-src','drag-over-top','drag-over-bot');
+  dragSrcIdx = null;
+  document.querySelectorAll('.drag-over-top,.drag-over-bot').forEach(el =>
+    el.classList.remove('drag-over-top','drag-over-bot'));
 }
 
-function clearAll(){
-  slices=[];renderList();renderPreview();
-  document.getElementById('btn-export').disabled=true;
-  document.getElementById('file-input').value='';
+// ── Inline Rename ──
+function startRename(e, i) {
+  e.stopPropagation();
+  const nameEl  = e.currentTarget;
+  const current = slices[i].name;
+  const input   = document.createElement('input');
+  input.className = 'slice-name-input';
+  input.value = current;
+  nameEl.replaceWith(input);
+  input.focus(); input.select();
+  const commit = () => {
+    slices[i].name = sanitize(input.value.trim(), i) || current;
+    renderList(); renderPreview();
+  };
+  input.addEventListener('blur', commit);
+  input.addEventListener('keydown', ev => {
+    if (ev.key === 'Enter')  input.blur();
+    if (ev.key === 'Escape') { input.value = current; input.blur(); }
+    ev.stopPropagation();
+  });
+}
+
+// ── Visibility ──
+function toggleVisible(e, i) {
+  e.stopPropagation();
+  slices[i].visible = !slices[i].visible;
+  renderList(); renderPreview();
+}
+
+// ══════════════════════════════════════════════
+//  RENDER PREVIEW
+// ══════════════════════════════════════════════
+function renderPreview() {
+  const area = document.getElementById('preview-area');
+
+  if (!slices.length) {
+    area.innerHTML = `<div class="preview-empty">
+      <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2">
+        <rect x="4" y="4" width="14" height="14" rx="1"/>
+        <rect x="22" y="4" width="14" height="14" rx="1"/>
+        <rect x="4" y="22" width="14" height="14" rx="1"/>
+        <path d="M22 29h14M29 22v14" stroke-linecap="round"/>
+      </svg>
+      El preview aparecerá aquí<br>tras importar un SVG</div>
+    <button id="overlay-btn" onclick="toggleOverlay()">Overlay res.</button>`;
+    document.getElementById('preview-dim').textContent = '—';
+    return;
+  }
+
+  // bounding box de todos los slices
+  let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+  slices.forEach(s => s.points.forEach(p => {
+    minX=Math.min(minX,p.x); minY=Math.min(minY,p.y);
+    maxX=Math.max(maxX,p.x); maxY=Math.max(maxY,p.y);
+  }));
+  const dW=maxX-minX||1, dH=maxY-minY||1;
+  const aW=area.clientWidth-64, aH=area.clientHeight-64;
+  const sc = Math.min(aW/dW, aH/dH) * 0.95;
+  const cW = Math.round(dW*sc), cH = Math.round(dH*sc);
+
+  // mantener el canvas si ya existe
+  let canvas = document.getElementById('preview-canvas');
+  const hadCanvas = !!canvas;
+  if (!canvas) { canvas = document.createElement('canvas'); canvas.id = 'preview-canvas'; }
+  canvas.width = cW; canvas.height = cH;
+
+  if (!hadCanvas) {
+    area.innerHTML = '';
+    area.appendChild(canvas);
+    const obtn = document.createElement('button');
+    obtn.id = 'overlay-btn'; obtn.textContent = 'Overlay res.';
+    obtn.style.display = 'block';
+    obtn.onclick = toggleOverlay;
+    area.appendChild(obtn);
+  }
+  // sync overlay button state
+  const obtn = document.getElementById('overlay-btn');
+  if (obtn) { obtn.style.display = 'block'; obtn.className = showOverlay ? 'active' : ''; }
+
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#212421'; ctx.fillRect(0,0,cW,cH);
+
+  // ── draw slices ──
+  slices.forEach((s, i) => {
+    if (!s.visible) return;
+    const isActive = (i === activeIdx);
+    ctx.beginPath();
+    s.points.forEach((p, j) => {
+      const sx=(p.x-minX)*sc, sy=(p.y-minY)*sc;
+      j===0 ? ctx.moveTo(sx,sy) : ctx.lineTo(sx,sy);
+    });
+    ctx.closePath();
+    ctx.fillStyle   = s.color + (isActive ? '55' : '28');
+    ctx.strokeStyle = s.color;
+    ctx.lineWidth   = isActive ? 2 : 1.5;
+    ctx.fill(); ctx.stroke();
+
+    // label
+    const lcx = s.points.reduce((a,p)=>a+p.x,0)/s.points.length;
+    const lcy = s.points.reduce((a,p)=>a+p.y,0)/s.points.length;
+    ctx.fillStyle = s.color;
+    ctx.font = `500 10px 'JetBrains Mono',monospace`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(s.name, (lcx-minX)*sc, (lcy-minY)*sc);
+  });
+
+  // draw hidden slices faded (so you know they exist)
+  slices.forEach((s) => {
+    if (s.visible) return;
+    ctx.globalAlpha = 0.15;
+    ctx.beginPath();
+    s.points.forEach((p,j)=>{const sx=(p.x-minX)*sc,sy=(p.y-minY)*sc;j===0?ctx.moveTo(sx,sy):ctx.lineTo(sx,sy);});
+    ctx.closePath();
+    ctx.strokeStyle = s.color; ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  });
+
+  // ── Bounding box del slice activo ──
+  if (activeIdx >= 0 && activeIdx < slices.length) {
+    const s = slices[activeIdx];
+    const xs = s.points.map(p=>p.x), ys = s.points.map(p=>p.y);
+    const bx0=(Math.min(...xs)-minX)*sc, by0=(Math.min(...ys)-minY)*sc;
+    const bx1=(Math.max(...xs)-minX)*sc, by1=(Math.max(...ys)-minY)*sc;
+    const bw=bx1-bx0, bh=by1-by0;
+    const col = s.color;
+
+    // dashed rect
+    ctx.save();
+    ctx.strokeStyle = col; ctx.lineWidth = 1;
+    ctx.setLineDash([4,3]);
+    ctx.strokeRect(bx0, by0, bw, bh);
+    ctx.restore();
+
+    // corner handles
+    const hs = 5;
+    [[bx0,by0],[bx1,by0],[bx1,by1],[bx0,by1]].forEach(([hx,hy]) => {
+      ctx.fillStyle = '#1a1d1a';
+      ctx.fillRect(hx-hs/2, hy-hs/2, hs, hs);
+      ctx.strokeStyle = col; ctx.lineWidth = 1.5; ctx.setLineDash([]);
+      ctx.strokeRect(hx-hs/2, hy-hs/2, hs, hs);
+    });
+
+    // dimension labels
+    const outW = parseFloat(document.getElementById('opt-w').value)||svgVB.w;
+    const outH = parseFloat(document.getElementById('opt-h').value)||svgVB.h;
+    const realW = Math.round((Math.max(...xs)-Math.min(...xs)) * outW/svgVB.w);
+    const realH = Math.round((Math.max(...ys)-Math.min(...ys)) * outH/svgVB.h);
+    ctx.fillStyle = col;
+    ctx.font = `500 9px 'JetBrains Mono',monospace`;
+    ctx.textAlign='center'; ctx.textBaseline='bottom';
+    ctx.fillText(`${realW}px`, bx0+bw/2, by0-4);
+    ctx.textAlign='left'; ctx.textBaseline='middle';
+    ctx.fillText(`${realH}px`, bx1+5, by0+bh/2);
+  }
+
+  // ── Overlay de resolución ──
+  if (showOverlay) {
+    const outW = parseFloat(document.getElementById('opt-w').value)||svgVB.w;
+    const outH = parseFloat(document.getElementById('opt-h').value)||svgVB.h;
+    const aspect = outW/outH;
+    const fw = Math.min(cW, cH * aspect);
+    const fh = fw / aspect;
+    const fx = (cW-fw)/2, fy = (cH-fh)/2;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 1;
+    ctx.setLineDash([6,4]);
+    ctx.strokeRect(fx+.5, fy+.5, fw-1, fh-1);
+    // corner marks
+    ctx.setLineDash([]); ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=1.5;
+    const cm=10;
+    [[fx,fy],[fx+fw,fy],[fx+fw,fy+fh],[fx,fy+fh]].forEach(([ox,oy],ci)=>{
+      const sx=ci===0||ci===3?1:-1, sy=ci<2?1:-1;
+      ctx.beginPath(); ctx.moveTo(ox+sx*cm,oy); ctx.lineTo(ox,oy); ctx.lineTo(ox,oy+sy*cm); ctx.stroke();
+    });
+    ctx.restore();
+    ctx.fillStyle='rgba(255,255,255,0.22)';
+    ctx.font=`500 9px 'JetBrains Mono',monospace`;
+    ctx.textAlign='left'; ctx.textBaseline='top';
+    ctx.fillText(`${Math.round(outW)} × ${Math.round(outH)} px`, fx+6, fy+6);
+  }
+
+  document.getElementById('preview-dim').textContent = `${Math.round(dW)} × ${Math.round(dH)} px`;
+}
+
+function toggleOverlay() {
+  showOverlay = !showOverlay;
+  renderPreview();
+}
+
+// ══════════════════════════════════════════════
+//  INTERACTIONS
+// ══════════════════════════════════════════════
+function removeSlice(e, i) {
+  e.stopPropagation(); slices.splice(i,1);
+  if (activeIdx >= slices.length) activeIdx = slices.length-1;
+  renderList(); renderPreview();
+  if (!slices.length) {
+    document.getElementById('btn-export').disabled = true;
+    setStatus('Sin slices. Importa un SVG.','');
+  } else {
+    setStatus(`${slices.length} slice${slices.length!==1?'s':''} restantes.`,'ok');
+  }
+}
+
+function clearAll() {
+  slices=[]; activeIdx=-1; showOverlay=false;
+  renderList(); renderPreview();
+  document.getElementById('btn-export').disabled = true;
+  document.getElementById('file-input').value = '';
   setStatus('Importa un SVG para comenzar.','');
 }
 
-// ── EXPORT XML ──
-function exportXML(){
-  if(!slices.length){setStatus('No hay slices para exportar.','err');return;}
-  const outW=parseFloat(document.getElementById('opt-w').value)||svgVB.w;
-  const outH=parseFloat(document.getElementById('opt-h').value)||svgVB.h;
-  const scaleX=outW/svgVB.w, scaleY=outH/svgVB.h;
+// ══════════════════════════════════════════════
+//  EXPORT DROPDOWN
+// ══════════════════════════════════════════════
+function toggleExportMenu() {
+  document.getElementById('export-menu').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.export-wrap'))
+    document.getElementById('export-menu').classList.remove('open');
+});
 
-  // IDs únicos estilo Resolume (timestamp + offset)
-  let uidBase=Date.now();
-  const uid=()=>String(uidBase++);
+function doExport(mode) {
+  document.getElementById('export-menu').classList.remove('open');
+  if (!slices.length) { setStatus('No hay slices para exportar.','err'); return; }
+  const vis = slices.filter(s => s.visible);
+  if (!vis.length) { setStatus('Todos los slices están ocultos.','err'); return; }
 
-  const pr=(name,val,min,max)=>
-`\t\t\t\t\t\t<ParamRange name="${name}" T="DOUBLE" default="${val}" value="${val}">
-\t\t\t\t\t\t\t<PhaseSourceStatic name="PhaseSourceStatic"/>
-\t\t\t\t\t\t\t<BehaviourDouble name="BehaviourDouble"/>
-\t\t\t\t\t\t\t<ValueRange name="defaultRange" min="${min}" max="${max}"/>
-\t\t\t\t\t\t\t<ValueRange name="minMax" min="${min}" max="${max}"/>
-\t\t\t\t\t\t\t<ValueRange name="startStop" min="${min}" max="${max}"/>
-\t\t\t\t\t\t</ParamRange>`;
+  const outW   = parseFloat(document.getElementById('opt-w').value)||svgVB.w;
+  const outH   = parseFloat(document.getElementById('opt-h').value)||svgVB.h;
+  const scaleX = outW/svgVB.w, scaleY = outH/svgVB.h;
+  let uidBase  = Date.now();
+  const uid    = () => String(uidBase++);
 
-  const pr2=(name,val,min,max)=>  // para Screen-level (un tab menos)
-`\t\t\t\t\t<ParamRange name="${name}" T="DOUBLE" default="${val}" value="${val}">
-\t\t\t\t\t\t<PhaseSourceStatic name="PhaseSourceStatic"/>
-\t\t\t\t\t\t<BehaviourDouble name="BehaviourDouble"/>
-\t\t\t\t\t\t<ValueRange name="defaultRange" min="${min}" max="${max}"/>
-\t\t\t\t\t\t<ValueRange name="minMax" min="${min}" max="${max}"/>
-\t\t\t\t\t\t<ValueRange name="startStop" min="${min}" max="${max}"/>
-\t\t\t\t\t</ParamRange>`;
+  if (mode === 'screensetup') buildScreenSetup(vis, outW, outH, scaleX, scaleY, uid);
+  else                         buildCompositionPreset(vis, outW, outH, scaleX, scaleY, uid);
+}
 
-  const sliceXML=(s)=>{
-    const xs=s.points.map(p=>r2(p.x*scaleX));
-    const ys=s.points.map(p=>r2(p.y*scaleY));
-    const x0=Math.min(...xs), y0=Math.min(...ys);
-    const x1=Math.max(...xs), y1=Math.max(...ys);
-    const w=x1-x0, h=y1-y0;
+// ══════════════════════════════════════════════
+//  XML HELPERS
+// ══════════════════════════════════════════════
+function prRange(name, val, min, max, tabs=6) {
+  const t='\t'.repeat(tabs), t1='\t'.repeat(tabs+1);
+  return `${t}<ParamRange name="${name}" T="DOUBLE" default="${val}" value="${val}">
+${t1}<PhaseSourceStatic name="PhaseSourceStatic"/>
+${t1}<BehaviourDouble name="BehaviourDouble"/>
+${t1}<ValueRange name="defaultRange" min="${min}" max="${max}"/>
+${t1}<ValueRange name="minMax" min="${min}" max="${max}"/>
+${t1}<ValueRange name="startStop" min="${min}" max="${max}"/>
+${t}</ParamRange>`;
+}
 
-    // 4 vértices TL→TR→BR→BL
-    const v4=`\t\t\t\t\t\t\t<v x="${r2(x0)}" y="${r2(y0)}"/>
+function makeSliceXML(s, scaleX, scaleY, uid) {
+  const xs=s.points.map(p=>r2(p.x*scaleX));
+  const ys=s.points.map(p=>r2(p.y*scaleY));
+  const x0=Math.min(...xs),y0=Math.min(...ys);
+  const x1=Math.max(...xs),y1=Math.max(...ys);
+  const w=x1-x0,h=y1-y0;
+  const v4=`\t\t\t\t\t\t\t<v x="${r2(x0)}" y="${r2(y0)}"/>
 \t\t\t\t\t\t\t<v x="${r2(x1)}" y="${r2(y0)}"/>
 \t\t\t\t\t\t\t<v x="${r2(x1)}" y="${r2(y1)}"/>
 \t\t\t\t\t\t\t<v x="${r2(x0)}" y="${r2(y1)}"/>`;
-
-    // Grid 4×4 para BezierWarper
-    let bv='';
-    for(let row=0;row<4;row++){
-      for(let col=0;col<4;col++){
-        bv+=`\t\t\t\t\t\t\t\t<v x="${r2(x0+w*(col/3))}" y="${r2(y0+h*(row/3))}"/>\n`;
-      }
-    }
-
-    return `\t\t\t\t\t<Slice uniqueId="${uid()}">
+  let bv='';
+  for(let row=0;row<4;row++)for(let col=0;col<4;col++)
+    bv+=`\t\t\t\t\t\t\t\t<v x="${r2(x0+w*(col/3))}" y="${r2(y0+h*(row/3))}"/>\n`;
+  return `\t\t\t\t\t<Slice uniqueId="${uid()}">
 \t\t\t\t\t\t<Params name="Common">
 \t\t\t\t\t\t\t<Param name="Name" T="STRING" default="Layer" value="${xe(s.name)}"/>
 \t\t\t\t\t\t\t<Param name="Enabled" T="BOOL" default="1" value="1"/>
@@ -792,16 +930,16 @@ function exportXML(){
 \t\t\t\t\t\t</Params>
 \t\t\t\t\t\t<Params name="Output">
 \t\t\t\t\t\t\t<Param name="Flip" T="UINT8" default="0" value="0"/>
-${pr('Brightness',0,-1,1)}
-${pr('Contrast',0,-1,1)}
-${pr('Red',0,-1,1)}
-${pr('Green',0,-1,1)}
-${pr('Blue',0,-1,1)}
+${prRange('Brightness',0,-1,1)}
+${prRange('Contrast',0,-1,1)}
+${prRange('Red',0,-1,1)}
+${prRange('Green',0,-1,1)}
+${prRange('Blue',0,-1,1)}
 \t\t\t\t\t\t\t<Param name="Is Key" T="BOOL" default="0" value="0"/>
 \t\t\t\t\t\t\t<Param name="Black BG" T="BOOL" default="0" value="0"/>
-${pr('BRed',0,0,'0.4000000000000000222')}
-${pr('BGreen',0,0,'0.4000000000000000222')}
-${pr('BBlue',0,0,'0.4000000000000000222')}
+${prRange('BRed',0,0,'0.4000000000000000222')}
+${prRange('BGreen',0,0,'0.4000000000000000222')}
+${prRange('BBlue',0,0,'0.4000000000000000222')}
 \t\t\t\t\t\t</Params>
 \t\t\t\t\t\t<InputRect orientation="0">
 ${v4}
@@ -828,71 +966,68 @@ ${v4}
 \t\t\t\t\t\t\t</Homography>
 \t\t\t\t\t\t</Warper>
 \t\t\t\t\t</Slice>`;
-  };
+}
 
-  const screenId=uid();
-  const xml=
-`<?xml version="1.0" encoding="utf-8"?>
-<XmlState name="${svgFileName}">
-\t<versionInfo name="Resolume Arena" majorVersion="7" minorVersion="26" microVersion="1" revision="7833"/>
-\t<ScreenSetup name="ScreenSetup">
-\t\t<Params name="ScreenSetupParams"/>
-\t\t<CurrentCompositionTextureSize width="${outW}" height="${outH}"/>
-\t\t<screens>
-\t\t\t<Screen name="VectorSlice" uniqueId="${screenId}">
-\t\t\t\t<Params name="Params">
-\t\t\t\t\t<Param name="Name" T="STRING" default="" value="VectorSlice"/>
-\t\t\t\t\t<Param name="Enabled" T="BOOL" default="1" value="1"/>
-\t\t\t\t\t<Param name="Hidden" T="BOOL" default="0" value="0"/>
-\t\t\t\t</Params>
-\t\t\t\t<Params name="Output">
-${pr2('Opacity',1,0,1)}
-${pr2('Brightness',0,-1,1)}
-${pr2('Contrast',0,-1,1)}
-${pr2('Red',0,-1,1)}
-${pr2('Green',0,-1,1)}
-${pr2('Blue',0,-1,1)}
-\t\t\t\t</Params>
-\t\t\t\t<guides>
-\t\t\t\t\t<ScreenGuide name="ScreenGuide" type="0">
-\t\t\t\t\t\t<Params name="Params">
-\t\t\t\t\t\t\t<ParamPixels name="Image"/>
-${pr('Opacity',0.25,0,1)}
-\t\t\t\t\t\t</Params>
-\t\t\t\t\t</ScreenGuide>
-\t\t\t\t\t<ScreenGuide name="ScreenGuide" type="1">
-\t\t\t\t\t\t<Params name="Params">
-\t\t\t\t\t\t\t<ParamPixels name="Image"/>
-${pr('Opacity',0.25,0,1)}
-\t\t\t\t\t\t</Params>
-\t\t\t\t\t</ScreenGuide>
-\t\t\t\t</guides>
-\t\t\t\t<layers>
-${slices.map(s=>sliceXML(s)).join('\n')}
-\t\t\t\t</layers>
-\t\t\t\t<OutputDevice>
-\t\t\t\t\t<OutputDeviceVirtual name="VectorSlice" deviceId="VirtualScreen 1" idHash="10094742552620344504" width="${outW}" height="${outH}">
-\t\t\t\t\t\t<Params name="Params">
-\t\t\t\t\t\t\t<ParamRange name="Width" T="DOUBLE" default="${outW}" value="${outW}">
-\t\t\t\t\t\t\t\t<PhaseSourceStatic name="PhaseSourceStatic"/>
-\t\t\t\t\t\t\t\t<BehaviourDouble name="BehaviourDouble"/>
-\t\t\t\t\t\t\t\t<ValueRange name="defaultRange" min="1" max="32768"/>
-\t\t\t\t\t\t\t\t<ValueRange name="minMax" min="1" max="32768"/>
-\t\t\t\t\t\t\t\t<ValueRange name="startStop" min="1" max="32768"/>
-\t\t\t\t\t\t\t</ParamRange>
-\t\t\t\t\t\t\t<ParamRange name="Height" T="DOUBLE" default="${outH}" value="${outH}">
-\t\t\t\t\t\t\t\t<PhaseSourceStatic name="PhaseSourceStatic"/>
-\t\t\t\t\t\t\t\t<BehaviourDouble name="BehaviourDouble"/>
-\t\t\t\t\t\t\t\t<ValueRange name="defaultRange" min="1" max="32768"/>
-\t\t\t\t\t\t\t\t<ValueRange name="minMax" min="1" max="32768"/>
-\t\t\t\t\t\t\t\t<ValueRange name="startStop" min="1" max="32768"/>
-\t\t\t\t\t\t\t</ParamRange>
-\t\t\t\t\t\t</Params>
-\t\t\t\t\t</OutputDeviceVirtual>
-\t\t\t\t</OutputDevice>
-\t\t\t</Screen>
-\t\t</screens>
-\t\t<SoftEdging>
+function screenBlock(vis, outW, outH, scaleX, scaleY, uid, tabDepth=3) {
+  const td = '\t'.repeat(tabDepth);
+  const screenId = uid();
+  const layers = vis.map(s => makeSliceXML(s, scaleX, scaleY, uid)).join('\n');
+  return `${td}<Screen name="${xe(svgFileName)}" uniqueId="${screenId}">
+${td}\t<Params name="Params">
+${td}\t\t<Param name="Name" T="STRING" default="" value="${xe(svgFileName)}"/>
+${td}\t\t<Param name="Enabled" T="BOOL" default="1" value="1"/>
+${td}\t\t<Param name="Hidden" T="BOOL" default="0" value="0"/>
+${td}\t</Params>
+${td}\t<Params name="Output">
+${prRange('Opacity',1,0,1,tabDepth+2)}
+${prRange('Brightness',0,-1,1,tabDepth+2)}
+${prRange('Contrast',0,-1,1,tabDepth+2)}
+${prRange('Red',0,-1,1,tabDepth+2)}
+${prRange('Green',0,-1,1,tabDepth+2)}
+${prRange('Blue',0,-1,1,tabDepth+2)}
+${td}\t</Params>
+${td}\t<guides>
+${td}\t\t<ScreenGuide name="ScreenGuide" type="0">
+${td}\t\t\t<Params name="Params">
+${td}\t\t\t\t<ParamPixels name="Image"/>
+${prRange('Opacity',0.25,0,1,tabDepth+4)}
+${td}\t\t\t</Params>
+${td}\t\t</ScreenGuide>
+${td}\t\t<ScreenGuide name="ScreenGuide" type="1">
+${td}\t\t\t<Params name="Params">
+${td}\t\t\t\t<ParamPixels name="Image"/>
+${prRange('Opacity',0.25,0,1,tabDepth+4)}
+${td}\t\t\t</Params>
+${td}\t\t</ScreenGuide>
+${td}\t</guides>
+${td}\t<layers>
+${layers}
+${td}\t</layers>
+${td}\t<OutputDevice>
+${td}\t\t<OutputDeviceVirtual name="${xe(svgFileName)}" deviceId="VirtualScreen 1" idHash="10094742552620344504" width="${outW}" height="${outH}">
+${td}\t\t\t<Params name="Params">
+${td}\t\t\t\t<ParamRange name="Width" T="DOUBLE" default="${outW}" value="${outW}">
+${td}\t\t\t\t\t<PhaseSourceStatic name="PhaseSourceStatic"/>
+${td}\t\t\t\t\t<BehaviourDouble name="BehaviourDouble"/>
+${td}\t\t\t\t\t<ValueRange name="defaultRange" min="1" max="32768"/>
+${td}\t\t\t\t\t<ValueRange name="minMax" min="1" max="32768"/>
+${td}\t\t\t\t\t<ValueRange name="startStop" min="1" max="32768"/>
+${td}\t\t\t\t</ParamRange>
+${td}\t\t\t\t<ParamRange name="Height" T="DOUBLE" default="${outH}" value="${outH}">
+${td}\t\t\t\t\t<PhaseSourceStatic name="PhaseSourceStatic"/>
+${td}\t\t\t\t\t<BehaviourDouble name="BehaviourDouble"/>
+${td}\t\t\t\t\t<ValueRange name="defaultRange" min="1" max="32768"/>
+${td}\t\t\t\t\t<ValueRange name="minMax" min="1" max="32768"/>
+${td}\t\t\t\t\t<ValueRange name="startStop" min="1" max="32768"/>
+${td}\t\t\t\t</ParamRange>
+${td}\t\t\t</Params>
+${td}\t\t</OutputDeviceVirtual>
+${td}\t</OutputDevice>
+${td}</Screen>`;
+}
+
+function softEdging() {
+  return `\t\t<SoftEdging>
 \t\t\t<Params name="Soft Edge">
 \t\t\t\t<ParamRange name="Gamma Red" T="DOUBLE" default="2" value="2">
 \t\t\t\t\t<PhaseSourceStatic name="PhaseSourceStatic"/>
@@ -937,23 +1072,66 @@ ${slices.map(s=>sliceXML(s)).join('\n')}
 \t\t\t\t\t<ValueRange name="startStop" min="0.10000000000000000555" max="7"/>
 \t\t\t\t</ParamRange>
 \t\t\t</Params>
-\t\t</SoftEdging>
+\t\t</SoftEdging>`;
+}
+
+// ── Screen Setup ──
+function buildScreenSetup(vis, outW, outH, scaleX, scaleY, uid) {
+  const xml =
+`<?xml version="1.0" encoding="utf-8"?>
+<XmlState name="${xe(svgFileName)}">
+\t<versionInfo name="Resolume Arena" majorVersion="7" minorVersion="26" microVersion="1" revision="7833"/>
+\t<ScreenSetup name="ScreenSetup">
+\t\t<Params name="ScreenSetupParams"/>
+\t\t<CurrentCompositionTextureSize width="${outW}" height="${outH}"/>
+\t\t<screens>
+${screenBlock(vis, outW, outH, scaleX, scaleY, uid, 3)}
+\t\t</screens>
+${softEdging()}
 \t</ScreenSetup>
 </XmlState>`;
+  download(xml, `${svgFileName}.xml`);
+  setStatus(`✓ ${vis.length} slices → Screen Setup XML`, 'ok');
+}
 
+// ── Composition Preset ──
+function buildCompositionPreset(vis, outW, outH, scaleX, scaleY, uid) {
+  const xml =
+`<?xml version="1.0" encoding="utf-8"?>
+<XmlState name="${xe(svgFileName)}">
+\t<versionInfo name="Resolume Arena" majorVersion="7" minorVersion="26" microVersion="1" revision="7833"/>
+\t<Composition uniqueId="${uid()}" name="${xe(svgFileName)}">
+\t\t<Params name="Params">
+\t\t\t<Param name="Name" T="STRING" default="" value="${xe(svgFileName)}"/>
+\t\t\t<Param name="Width" T="UINT32" default="${outW}" value="${outW}"/>
+\t\t\t<Param name="Height" T="UINT32" default="${outH}" value="${outH}"/>
+\t\t\t<Param name="FrameRate" T="DOUBLE" default="30" value="30"/>
+\t\t</Params>
+\t\t<ScreenSetup name="ScreenSetup">
+\t\t\t<Params name="ScreenSetupParams"/>
+\t\t\t<CurrentCompositionTextureSize width="${outW}" height="${outH}"/>
+\t\t\t<screens>
+${screenBlock(vis, outW, outH, scaleX, scaleY, uid, 4)}
+\t\t\t</screens>
+${softEdging()}
+\t\t</ScreenSetup>
+\t</Composition>
+</XmlState>`;
+  download(xml, `${svgFileName}_comp.xml`);
+  setStatus(`✓ ${vis.length} slices → Composition Preset XML`, 'ok');
+}
+
+// ══════════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════════
+function download(xml, filename) {
   const blob=new Blob([xml],{type:'application/xml'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
-  a.href=url;
-  a.download=`${svgFileName}.xml`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  setStatus(`✓ ${slices.length} slice${slices.length!==1?'s':''} exportados.`,'ok');
+  a.href=url; a.download=filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
 }
-
-// ── UTILS ──
 function sanitize(s,i){const c=String(s).replace(/[^a-zA-Z0-9_\-]/g,'_').replace(/^_+|_+$/g,'');return c||`SCREEN_${String(i+1).padStart(2,'0')}`;}
 function xe(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}

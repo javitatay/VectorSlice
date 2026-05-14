@@ -36,13 +36,37 @@ No requiere instalación ni conexión a internet.
 
 ### 3. Importa el SVG
 
-Arrastra el `.svg` a la zona de drop. VectorSlice detecta automáticamente todos los shapes y muestra un preview visual.
+Arrastra el `.svg` a la zona de drop. VectorSlice detecta automáticamente todos los shapes y muestra un preview visual con colores por slice.
 
-### 4. Exporta el XML
+### 4. Revisa y edita los slices
 
-Click en **Exportar XML**. Se descarga un archivo `.xml` con el mismo nombre que el SVG importado (ej: `mi_mapping.svg` → `mi_mapping.xml`).
+Desde la lista lateral puedes ajustar el layout antes de exportar:
 
-### 5. Importa en Resolume Arena
+| Acción | Cómo |
+|--------|------|
+| **Seleccionar** un slice | Click sobre él — resalta en el preview con bounding box y dimensiones |
+| **Renombrar** un slice | Doble click sobre el nombre — edita inline, Enter confirma, Esc cancela |
+| **Reordenar** slices | Arrastra desde el icono `⠿` — una línea indica la posición de destino |
+| **Ocultar / mostrar** un slice | Botón `◉ / ○` — los slices ocultos se excluyen del XML exportado |
+| **Eliminar** un slice | Botón `×` al hacer hover |
+
+### 5. Usa el preview
+
+- **Bounding box**: al seleccionar un slice aparece su rectángulo con handles en las esquinas y las dimensiones reales en píxeles de salida.
+- **Overlay de resolución**: botón "Overlay res." en la esquina superior derecha del canvas — muestra el marco de la resolución de salida con marcas de esquina y etiqueta. Útil para verificar que los slices encajan dentro del área de composición.
+
+### 6. Exporta el XML
+
+Click en **Exportar ▾** y elige el formato:
+
+| Formato | Descripción | Destino en Resolume |
+|---------|-------------|---------------------|
+| **Screen Setup XML** | Layout de pantallas y slices | `Advanced Output → Import Layout` |
+| **Composition Preset XML** | Mismo layout envuelto en una composición completa | Preset de composición con resolución y framerate |
+
+El archivo se descarga con el mismo nombre que el SVG importado.
+
+### 7. Importa en Resolume Arena
 
 Copia el archivo `.xml` generado a la carpeta de presets de Resolume:
 
@@ -108,6 +132,9 @@ Aumenta el valor de "Curvas" a 12–16 antes de exportar.
 
 **Resolume no importa el XML**  
 Confirma que usas Resolume Arena 7 (no Avenue ni versión 6).
+
+**Los slices ocultos no aparecen en el XML**  
+Es el comportamiento esperado — los slices con visibilidad desactivada se excluyen del export. Actívalos antes de exportar si los necesitas.
 
 ---
 
