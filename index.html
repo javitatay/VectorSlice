@@ -7,21 +7,21 @@
 <meta name="description" content="Convierte vectores SVG de Illustrator en Slices de Resolume Arena. Sin instalación, directo en el navegador.">
 <title>VectorSlice — SVG to Resolume Arena</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:        #1a1d1a;
-  --surface:   #212421;
-  --border:    #2e322e;
-  --accent:    #4d9962;
-  --accent-lt: #1e2b20;
-  --accent-dk: #6abf7e;
-  --muted:     #6b706b;
-  --text:      #d8ddd8;
-  --text-dim:  #8a908a;
-  --danger:    #c0392b;
+  --bg:        #131614;
+  --surface:   #1b1e1b;
+  --border:    #303530;
+  --accent:    #52a868;
+  --accent-lt: #192b1c;
+  --accent-dk: #85e0a3;
+  --muted:     #8a928a;
+  --text:      #eaf0ea;
+  --text-dim:  #b4bdb4;
+  --danger:    #e05545;
   --mono:      'JetBrains Mono', monospace;
   --sans:      'Inter', sans-serif;
   --radius:    4px;
@@ -33,7 +33,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--sans);
-  font-size: 14px;
+  font-size: 15px;
   display: grid;
   grid-template-rows: auto 1fr auto;
   min-height: 100vh;
@@ -45,28 +45,28 @@ header {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   padding: 0 32px;
-  height: 56px;
+  height: 58px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 .logo { display: flex; align-items: center; gap: 12px; }
 .logo-mark {
-  width: 28px; height: 28px;
+  width: 30px; height: 30px;
   background: var(--accent);
-  border-radius: 3px;
+  border-radius: 4px;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
-.logo-mark svg { width: 14px; height: 14px; fill: white; }
-.logo-name { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: -0.2px; }
-.logo-sep  { color: var(--border); margin: 0 2px; }
-.logo-sub  { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.logo-mark svg { width: 15px; height: 15px; fill: white; }
+.logo-name { font-size: 16px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
+.logo-sep  { color: var(--border); margin: 0 4px; font-size: 18px; }
+.logo-sub  { font-family: var(--mono); font-size: 12px; color: var(--text-dim); }
 
 /* MAIN */
 main {
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 310px 1fr;
   overflow: hidden;
 }
 
@@ -86,23 +86,23 @@ main {
   flex-shrink: 0;
 }
 .section-title {
-  font-size: 11px; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.6px;
-  color: var(--muted);
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--text-dim);
 }
 .pill {
-  font-family: var(--mono); font-size: 10px;
-  padding: 2px 8px;
+  font-family: var(--mono); font-size: 11px;
+  padding: 2px 9px;
   background: var(--accent-lt); color: var(--accent-dk);
   border-radius: 10px; font-weight: 500;
 }
 
 /* DROP ZONE */
 #dropzone {
-  margin: 16px;
+  margin: 14px 16px;
   border: 1.5px dashed var(--border);
   border-radius: var(--radius);
-  padding: 24px 16px;
+  padding: 22px 16px;
   text-align: center;
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s;
@@ -111,32 +111,41 @@ main {
 #dropzone:hover, #dropzone.drag-over {
   border-color: var(--accent); background: var(--accent-lt);
 }
-.drop-icon { width: 28px; height: 28px; margin: 0 auto 10px; opacity: 0.25; }
-.drop-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
-.drop-hint  { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+.drop-icon { width: 28px; height: 28px; margin: 0 auto 10px; opacity: 0.4; }
+.drop-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.drop-hint  { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
 #file-input { display: none; }
 
 /* SLICES LIST */
 .slices-list {
   flex: 1; overflow-y: auto;
-  padding: 8px 16px 16px;
+  padding: 6px 12px 16px;
 }
 .empty-msg {
   padding: 32px 0; text-align: center;
-  color: var(--muted); font-size: 12px; line-height: 1.9;
+  color: var(--text-dim); font-size: 13px; line-height: 2;
 }
+.slices-hint {
+  font-size: 12px; color: var(--text-dim);
+  padding: 8px 4px 10px;
+  line-height: 1.6;
+  display: none;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 6px;
+}
+.slices-hint b { color: var(--text); font-weight: 600; }
 
 /* SLICE ITEM */
 .slice-item {
   display: flex; align-items: center; gap: 8px;
-  padding: 7px 8px;
+  padding: 8px 8px;
   border-radius: var(--radius);
-  margin-bottom: 2px;
+  margin-bottom: 1px;
   cursor: pointer;
   transition: background 0.1s;
   user-select: none;
 }
-.slice-item:hover  { background: var(--bg); }
+.slice-item:hover  { background: rgba(255,255,255,0.04); }
 .slice-item.active { background: var(--accent-lt); }
 .slice-item.drag-src      { opacity: 0.35; }
 .slice-item.drag-over-top { border-top: 2px solid var(--accent); }
@@ -144,21 +153,21 @@ main {
 
 .drag-handle {
   color: var(--border); cursor: grab;
-  font-size: 14px; line-height: 1;
+  font-size: 15px; line-height: 1;
   padding: 0 2px; flex-shrink: 0;
   transition: color 0.1s;
 }
-.slice-item:hover .drag-handle { color: var(--muted); }
+.slice-item:hover .drag-handle { color: var(--text-dim); }
 .drag-handle:active { cursor: grabbing; }
 
-.slice-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.slice-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
 
 .slice-eye {
   background: none; border: none;
-  cursor: pointer; font-size: 13px; line-height: 1;
+  cursor: pointer; font-size: 14px; line-height: 1;
   padding: 0 2px; flex-shrink: 0;
   transition: color 0.1s; opacity: 0;
-  color: var(--muted);
+  color: var(--text-dim);
 }
 .slice-item:hover .slice-eye,
 .slice-item.active .slice-eye { opacity: 1; }
@@ -167,24 +176,24 @@ main {
 .slice-info { flex: 1; min-width: 0; }
 
 .slice-name {
-  font-family: var(--mono); font-size: 12px; font-weight: 500;
+  font-family: var(--mono); font-size: 13px; font-weight: 500;
   color: var(--text);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .slice-name-input {
-  font-family: var(--mono); font-size: 12px; font-weight: 500;
+  font-family: var(--mono); font-size: 13px; font-weight: 500;
   color: var(--text); background: var(--bg);
   border: 1px solid var(--accent); border-radius: 2px;
   padding: 1px 5px; width: 100%; outline: none;
 }
 .slice-pts {
-  font-family: var(--mono); font-size: 10px;
-  color: var(--muted); margin-top: 1px;
+  font-family: var(--mono); font-size: 11px;
+  color: var(--text-dim); margin-top: 1px;
 }
 
 .slice-del {
-  background: none; border: none; color: var(--border);
-  cursor: pointer; font-size: 16px; line-height: 1;
+  background: none; border: none; color: var(--muted);
+  cursor: pointer; font-size: 17px; line-height: 1;
   padding: 0 3px; transition: color 0.1s;
   opacity: 0; flex-shrink: 0;
 }
@@ -200,40 +209,66 @@ main {
   display: flex; align-items: center; justify-content: center;
   padding: 32px; overflow: hidden;
   background-image:
-    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
   background-size: 24px 24px;
   background-color: var(--bg);
   position: relative;
 }
-#preview-canvas { border-radius: var(--radius); box-shadow: 0 1px 8px rgba(0,0,0,0.07); display: block; }
-.preview-empty { text-align: center; color: var(--muted); font-size: 12px; line-height: 2; }
-.preview-empty svg { width: 36px; height: 36px; opacity: 0.15; display: block; margin: 0 auto 14px; }
+#preview-canvas { border-radius: var(--radius); box-shadow: 0 2px 16px rgba(0,0,0,0.3); display: block; }
+.preview-empty { text-align: center; color: var(--text-dim); font-size: 13px; line-height: 2; }
+.preview-empty svg { width: 36px; height: 36px; opacity: 0.2; display: block; margin: 0 auto 14px; }
 
-#overlay-btn {
-  position: absolute; top: 12px; right: 12px;
-  background: var(--surface); border: 1px solid var(--border);
-  color: var(--muted);
-  font-family: var(--mono); font-size: 10px;
-  padding: 4px 10px; border-radius: var(--radius);
-  cursor: pointer; transition: all 0.15s; display: none;
+.preview-area.drop-active {
+  border: 1.5px dashed var(--accent) !important;
+  background-color: var(--accent-lt) !important;
 }
-#overlay-btn:hover { border-color: var(--accent); color: var(--accent-dk); }
+.preview-drop-hint {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 12px; pointer-events: none;
+}
+.preview-drop-hint svg { width: 36px; height: 36px; opacity: 0.25; }
+.preview-drop-hint span { font-size: 13px; color: var(--text-dim); font-family: var(--mono); }
+
+/* Canvas overlay controls */
+.toggle-btn {
+  font-family: var(--mono); font-size: 11px;
+  padding: 4px 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-dim);
+  cursor: pointer; transition: all 0.15s; line-height: 1;
+  white-space: nowrap;
+}
+.toggle-btn:hover:not(:disabled) { border-color: var(--text-dim); color: var(--text); }
+.toggle-btn.active { border-color: var(--accent); color: var(--accent-dk); background: var(--accent-lt); }
+.toggle-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+#overlay-btn {
+  font-family: var(--mono); font-size: 11px;
+  padding: 4px 10px; border-radius: var(--radius);
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text-dim);
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+#overlay-btn:hover { border-color: var(--text-dim); color: var(--text); }
 #overlay-btn.active { border-color: var(--accent); color: var(--accent-dk); background: var(--accent-lt); }
 
 /* OPTIONS BAR */
 .options-bar {
   background: var(--surface); border-top: 1px solid var(--border);
   padding: 11px 24px;
-  display: flex; align-items: center; gap: 24px; flex-wrap: wrap; flex-shrink: 0;
+  display: flex; align-items: center; gap: 28px; flex-wrap: wrap; flex-shrink: 0;
 }
-.opt-group { display: flex; align-items: center; gap: 8px; }
-.opt-label { font-size: 11px; font-weight: 500; color: var(--muted); white-space: nowrap; }
+.opt-group { display: flex; align-items: center; gap: 9px; }
+.opt-label { font-size: 12px; font-weight: 500; color: var(--text-dim); white-space: nowrap; }
 
 input[type="number"] {
   background: var(--bg); border: 1px solid var(--border);
-  color: var(--text); font-family: var(--mono); font-size: 12px;
-  padding: 5px 8px; border-radius: var(--radius); width: 62px;
+  color: var(--text); font-family: var(--mono); font-size: 13px;
+  padding: 5px 8px; border-radius: var(--radius); width: 66px;
   transition: border-color 0.15s;
 }
 input[type="number"]:focus { outline: none; border-color: var(--accent); }
@@ -245,12 +280,12 @@ footer {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
 }
 .footer-left { display: flex; align-items: center; gap: 20px; flex: 1; min-width: 0; }
-#status { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+#status { font-family: var(--mono); font-size: 12px; color: var(--text-dim); }
 #status.ok  { color: var(--accent-dk); }
 #status.err { color: var(--danger); }
 
 .footer-author {
-  font-family: var(--mono); font-size: 10px; color: var(--text-dim);
+  font-family: var(--mono); font-size: 11px; color: var(--text-dim);
   white-space: nowrap; border: 1px solid var(--border);
   padding: 4px 10px; border-radius: var(--radius);
   text-decoration: none; transition: border-color 0.15s, color 0.15s;
@@ -260,15 +295,15 @@ footer {
 .btn-row { display: flex; gap: 8px; flex-shrink: 0; }
 
 button {
-  font-family: var(--sans); font-size: 12px; font-weight: 500;
-  padding: 7px 16px; border-radius: var(--radius);
+  font-family: var(--sans); font-size: 13px; font-weight: 500;
+  padding: 7px 17px; border-radius: var(--radius);
   border: 1px solid transparent; cursor: pointer; transition: all 0.15s; line-height: 1;
 }
-.btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
-.btn-primary:hover:not(:disabled) { background: var(--accent-dk); border-color: var(--accent-dk); }
+.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-primary:hover:not(:disabled) { background: var(--accent-dk); border-color: var(--accent-dk); color: #111; }
 .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
-.btn-ghost { background: transparent; color: var(--text-dim); border-color: var(--border); }
-.btn-ghost:hover { border-color: var(--muted); color: var(--text); }
+.btn-ghost { background: transparent; color: var(--text); border-color: var(--border); }
+.btn-ghost:hover { border-color: var(--text-dim); color: var(--text); }
 
 /* EXPORT DROPDOWN */
 .export-wrap { position: relative; }
@@ -277,22 +312,22 @@ button {
   bottom: calc(100% + 6px); right: 0;
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius); overflow: hidden;
-  min-width: 200px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  min-width: 210px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.6);
   z-index: 100;
 }
 .export-menu.open { display: block; }
 .export-opt {
   display: block; width: 100%; text-align: left;
-  padding: 10px 14px; background: none; border: none; border-radius: 0;
-  color: var(--text); font-size: 12px; cursor: pointer;
+  padding: 11px 15px; background: none; border: none; border-radius: 0;
+  color: var(--text); font-size: 13px; cursor: pointer;
   border-bottom: 1px solid var(--border);
 }
 .export-opt:last-child { border-bottom: none; }
 .export-opt:hover { background: var(--accent-lt); color: var(--accent-dk); }
 .export-opt-sub {
-  display: block; font-family: var(--mono); font-size: 10px;
-  color: var(--muted); margin-top: 2px;
+  display: block; font-family: var(--mono); font-size: 11px;
+  color: var(--text-dim); margin-top: 3px;
 }
 
 /* SCROLLBAR */
@@ -336,6 +371,7 @@ button {
     </div>
     <input type="file" id="file-input" accept=".svg">
 
+    <div class="slices-hint" id="slices-hint">Cada fila es una <b>capa del SVG</b> — su nombre se usará como ID del Slice en Resolume. Doble click para renombrar.</div>
     <div class="slices-list" id="slices-list">
       <div class="empty-msg">Importa un SVG para<br>ver los slices detectados</div>
     </div>
@@ -348,22 +384,25 @@ button {
     </div>
 
     <div class="preview-area" id="preview-area">
-      <div class="preview-empty">
+      <div class="preview-drop-hint">
         <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2">
           <rect x="4" y="4" width="14" height="14" rx="1"/>
           <rect x="22" y="4" width="14" height="14" rx="1"/>
           <rect x="4" y="22" width="14" height="14" rx="1"/>
           <path d="M22 29h14M29 22v14" stroke-linecap="round"/>
         </svg>
-        El preview aparecerá aquí<br>tras importar un SVG
+        <span>Arrastra el .svg aquí o usa el panel izquierdo</span>
       </div>
-      <button id="overlay-btn" onclick="toggleOverlay()">Overlay res.</button>
+      <div id="canvas-controls" style="position:absolute;top:12px;right:12px;display:none;flex-direction:column;gap:6px;align-items:flex-end;">
+        <button id="overlay-btn" onclick="toggleOverlay()">Overlay res.</button>
+        <button id="dim-toggle-btn" class="toggle-btn" onclick="toggleDimensions()" disabled>Dimensiones</button>
+      </div>
     </div>
 
     <div class="options-bar">
       <div class="opt-group">
-        <span class="opt-label">Subdivisión de curvas</span>
-        <input type="number" id="opt-sub" value="8" min="2" max="32">
+        <span class="opt-label" title="Cuántos segmentos rectos se usan para aproximar cada curva Bézier. Más = curvas más suaves, pero más puntos en el XML. El valor 8 es suficiente para la mayoría de casos.">Precisión de curvas</span>
+        <input type="number" id="opt-sub" value="8" min="2" max="32" title="Segmentos por curva Bézier (2–32). Valor recomendado: 8">
       </div>
       <div class="opt-group">
         <span class="opt-label">Resolución de salida</span>
@@ -408,6 +447,7 @@ let svgVB       = { x:0, y:0, w:1920, h:1080 };
 let svgFileName = 'vectorslice';
 let activeIdx   = -1;
 let showOverlay = false;
+let showDimensions = false;
 
 const PALETTE = [
   '#3d7a4e','#2c8a5a','#4a9465','#1f6b42',
@@ -430,6 +470,24 @@ dz.addEventListener('drop', e => {
 });
 fi.addEventListener('change', e => { if (e.target.files[0]) loadFile(e.target.files[0]); });
 
+// Drop en el área central del canvas (solo cuando no hay SVG cargado)
+const pa = document.getElementById('preview-area');
+pa.addEventListener('dragover', e => {
+  if (slices.length) return;           // ignorar si ya hay slices (son drags de reordenación)
+  e.preventDefault();
+  pa.classList.add('drop-active');
+});
+pa.addEventListener('dragleave', e => {
+  if (!pa.contains(e.relatedTarget)) pa.classList.remove('drop-active');
+});
+pa.addEventListener('drop', e => {
+  pa.classList.remove('drop-active');
+  if (slices.length) return;
+  e.preventDefault();
+  const f = e.dataTransfer.files[0];
+  if (f) loadFile(f);
+});
+
 function loadFile(file) {
   if (!file.name.toLowerCase().endsWith('.svg')) {
     setStatus('Solo se aceptan archivos .svg', 'err'); return;
@@ -443,19 +501,54 @@ function loadFile(file) {
 // ══════════════════════════════════════════════
 //  PARSE SVG
 // ══════════════════════════════════════════════
+// Convierte un valor SVG con unidad a píxeles (asume 96 dpi, igual que los navegadores)
+function svgUnitToPx(str) {
+  if (!str) return null;
+  const m = String(str).trim().match(/^([\d.eE+\-]+)\s*(px|pt|mm|cm|in|pc|em|rem|%|)$/i);
+  if (!m) return null;
+  const v = parseFloat(m[1]);
+  switch (m[2].toLowerCase()) {
+    case 'pt':  return v * 96 / 72;
+    case 'mm':  return v * 96 / 25.4;
+    case 'cm':  return v * 96 / 2.54;
+    case 'in':  return v * 96;
+    case 'pc':  return v * 96 / 6;
+    case 'px':
+    case '':    return v;
+    default:    return null;   // em/rem/% no se pueden resolver sin contexto
+  }
+}
+
 function parseSVG(text) {
   const doc   = new DOMParser().parseFromString(text, 'image/svg+xml');
   const svgEl = doc.querySelector('svg');
   if (!svgEl) { setStatus('SVG inválido.', 'err'); return; }
 
-  const vb = svgEl.getAttribute('viewBox');
-  if (vb) {
-    const p = vb.trim().split(/[\s,]+/).map(Number);
-    if (p.length === 4) svgVB = { x:p[0], y:p[1], w:p[2], h:p[3] };
-  } else {
-    svgVB.w = parseFloat(svgEl.getAttribute('width'))  || 1920;
-    svgVB.h = parseFloat(svgEl.getAttribute('height')) || 1080;
+  const vbAttr = svgEl.getAttribute('viewBox');
+  const wAttr  = svgEl.getAttribute('width');
+  const hAttr  = svgEl.getAttribute('height');
+
+  let vb = null;
+  if (vbAttr) {
+    const p = vbAttr.trim().split(/[\s,]+/).map(Number);
+    if (p.length === 4 && p.every(n => isFinite(n))) {
+      vb = { x: p[0], y: p[1], w: p[2], h: p[3] };
+    }
   }
+
+  // El viewBox define el sistema de coordenadas interno del SVG.
+  // width/height definen el tamaño de renderizado — en Illustrator suelen
+  // coincidir con el viewBox pero en unidades físicas (pt, mm…).
+  // Para el escalado a Resolume usamos siempre las dimensiones del viewBox
+  // (que están en las mismas unidades que los paths), y sólo recurrimos a
+  // width/height si no hay viewBox.
+  if (vb) {
+    svgVB = vb;
+  } else {
+    const pw = svgUnitToPx(wAttr), ph = svgUnitToPx(hAttr);
+    svgVB = { x: 0, y: 0, w: pw || 1920, h: ph || 1080 };
+  }
+
   document.getElementById('opt-w').value = Math.round(svgVB.w);
   document.getElementById('opt-h').value = Math.round(svgVB.h);
 
@@ -476,10 +569,13 @@ function parseSVG(text) {
 
   if (!slices.length) { setStatus('No se encontraron shapes válidos.', 'err'); return; }
   activeIdx = -1;
-  setStatus(`${slices.length} slice${slices.length!==1?'s':''} detectados.`, 'ok');
+  setStatus(`${slices.length} slice${slices.length!==1?'s':''} detectados — documento ${Math.round(svgVB.w)}×${Math.round(svgVB.h)} px.`, 'ok');
   renderList(); renderPreview();
   document.getElementById('btn-export').disabled = false;
-  document.getElementById('overlay-btn').style.display = 'block';
+  const cc = document.getElementById('canvas-controls');
+  if (cc) { cc.style.display = 'flex'; }
+  const dtb2 = document.getElementById('dim-toggle-btn');
+  if (dtb2) dtb2.disabled = false;
 }
 
 function getName(el, i) {
@@ -575,10 +671,13 @@ let dragSrcIdx = null;
 function renderList() {
   const list = document.getElementById('slices-list');
   document.getElementById('count-pill').textContent = slices.length;
+  const hint = document.getElementById('slices-hint');
   if (!slices.length) {
+    if (hint) hint.style.display = 'none';
     list.innerHTML = '<div class="empty-msg">Importa un SVG para<br>ver los slices detectados</div>';
     return;
   }
+  if (hint) hint.style.display = 'block';
   list.innerHTML = slices.map((s, i) => `
     <div class="slice-item${activeIdx===i?' active':''}"
          data-idx="${i}" draggable="true"
@@ -686,29 +785,31 @@ function renderPreview() {
   const area = document.getElementById('preview-area');
 
   if (!slices.length) {
-    area.innerHTML = `<div class="preview-empty">
+    area.classList.remove('drop-active');
+    area.innerHTML = `<div class="preview-drop-hint">
       <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2">
         <rect x="4" y="4" width="14" height="14" rx="1"/>
         <rect x="22" y="4" width="14" height="14" rx="1"/>
         <rect x="4" y="22" width="14" height="14" rx="1"/>
         <path d="M22 29h14M29 22v14" stroke-linecap="round"/>
       </svg>
-      El preview aparecerá aquí<br>tras importar un SVG</div>
-    <button id="overlay-btn" onclick="toggleOverlay()">Overlay res.</button>`;
+      <span>Arrastra el .svg aquí o usa el panel izquierdo</span>
+    </div>
+    <div id="canvas-controls" style="position:absolute;top:12px;right:12px;display:none;flex-direction:column;gap:6px;align-items:flex-end;">
+      <button id="overlay-btn" onclick="toggleOverlay()">Overlay res.</button>
+      <button id="dim-toggle-btn" class="toggle-btn" onclick="toggleDimensions()" disabled>Dimensiones</button>
+    </div>`;
     document.getElementById('preview-dim').textContent = '—';
     return;
   }
 
-  // bounding box de todos los slices
-  let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
-  slices.forEach(s => s.points.forEach(p => {
-    minX=Math.min(minX,p.x); minY=Math.min(minY,p.y);
-    maxX=Math.max(maxX,p.x); maxY=Math.max(maxY,p.y);
-  }));
-  const dW=maxX-minX||1, dH=maxY-minY||1;
-  const aW=area.clientWidth-64, aH=area.clientHeight-64;
-  const sc = Math.min(aW/dW, aH/dH) * 0.95;
-  const cW = Math.round(dW*sc), cH = Math.round(dH*sc);
+  // El canvas representa SIEMPRE el artboard completo (svgVB),
+  // no el bounding box de los shapes. Así el overlay = borde del canvas.
+  const docW = svgVB.w || 1920;
+  const docH = svgVB.h || 1080;
+  const aW = area.clientWidth - 64, aH = area.clientHeight - 64;
+  const sc  = Math.min(aW / docW, aH / docH) * 0.95;
+  const cW  = Math.round(docW * sc), cH = Math.round(docH * sc);
 
   // mantener el canvas si ya existe
   let canvas = document.getElementById('preview-canvas');
@@ -719,18 +820,41 @@ function renderPreview() {
   if (!hadCanvas) {
     area.innerHTML = '';
     area.appendChild(canvas);
+    const ctrl = document.createElement('div');
+    ctrl.id = 'canvas-controls';
+    ctrl.style.cssText = 'position:absolute;top:12px;right:12px;display:flex;flex-direction:column;gap:6px;align-items:flex-end;';
     const obtn = document.createElement('button');
     obtn.id = 'overlay-btn'; obtn.textContent = 'Overlay res.';
-    obtn.style.display = 'block';
     obtn.onclick = toggleOverlay;
-    area.appendChild(obtn);
+    const dbtn = document.createElement('button');
+    dbtn.id = 'dim-toggle-btn'; dbtn.textContent = 'Dimensiones';
+    dbtn.className = 'toggle-btn' + (showDimensions ? ' active' : '');
+    dbtn.onclick = toggleDimensions;
+    ctrl.appendChild(obtn); ctrl.appendChild(dbtn);
+    area.appendChild(ctrl);
   }
-  // sync overlay button state
+  // sync button states
   const obtn = document.getElementById('overlay-btn');
-  if (obtn) { obtn.style.display = 'block'; obtn.className = showOverlay ? 'active' : ''; }
+  if (obtn) obtn.className = showOverlay ? 'active' : '';
+  const dbtn2 = document.getElementById('dim-toggle-btn');
+  if (dbtn2) dbtn2.className = 'toggle-btn' + (showDimensions ? ' active' : '');
 
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#212421'; ctx.fillRect(0,0,cW,cH);
+  ctx.fillStyle = '#171a17'; ctx.fillRect(0, 0, cW, cH);
+
+  // Borde sutil del artboard (siempre visible como referencia)
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,255,255,0.12)'; ctx.lineWidth = 1;
+  ctx.strokeRect(0.5, 0.5, cW - 1, cH - 1);
+  ctx.restore();
+
+  // Función de coordenada: SVG → canvas (resta origen viewBox)
+  const px = x => (x - svgVB.x) * sc;
+  const py = y => (y - svgVB.y) * sc;
+
+  // Tamaño de fuente adaptado a la escala del canvas
+  const fBase = Math.max(15, Math.min(20, Math.round(sc * 20)));
+  const fSub  = Math.max(13, Math.min(17, Math.round(sc * 16)));
 
   // ── draw slices ──
   slices.forEach((s, i) => {
@@ -738,30 +862,44 @@ function renderPreview() {
     const isActive = (i === activeIdx);
     ctx.beginPath();
     s.points.forEach((p, j) => {
-      const sx=(p.x-minX)*sc, sy=(p.y-minY)*sc;
-      j===0 ? ctx.moveTo(sx,sy) : ctx.lineTo(sx,sy);
+      j === 0 ? ctx.moveTo(px(p.x), py(p.y)) : ctx.lineTo(px(p.x), py(p.y));
     });
     ctx.closePath();
-    ctx.fillStyle   = s.color + (isActive ? '55' : '28');
+    ctx.fillStyle   = s.color + (isActive ? '70' : '40');
     ctx.strokeStyle = s.color;
-    ctx.lineWidth   = isActive ? 2 : 1.5;
+    ctx.lineWidth   = isActive ? 2.5 : 1.5;
     ctx.fill(); ctx.stroke();
 
     // label
-    const lcx = s.points.reduce((a,p)=>a+p.x,0)/s.points.length;
-    const lcy = s.points.reduce((a,p)=>a+p.y,0)/s.points.length;
-    ctx.fillStyle = s.color;
-    ctx.font = `500 10px 'JetBrains Mono',monospace`;
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(s.name, (lcx-minX)*sc, (lcy-minY)*sc);
+    const lcx = s.points.reduce((a, p) => a + p.x, 0) / s.points.length;
+    const lcy = s.points.reduce((a, p) => a + p.y, 0) / s.points.length;
+    ctx.fillStyle = '#eaf0ea';
+    ctx.font = `600 ${fBase}px 'JetBrains Mono',monospace`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = showDimensions ? 'bottom' : 'middle';
+    ctx.fillText(s.name, px(lcx), py(lcy));
+
+    if (showDimensions) {
+      const sxs = s.points.map(p => p.x), sys = s.points.map(p => p.y);
+      const outW = parseFloat(document.getElementById('opt-w').value) || svgVB.w;
+      const outH = parseFloat(document.getElementById('opt-h').value) || svgVB.h;
+      const dw = Math.round((Math.max(...sxs) - Math.min(...sxs)) * outW / svgVB.w);
+      const dh = Math.round((Math.max(...sys) - Math.min(...sys)) * outH / svgVB.h);
+      ctx.font = `500 ${fSub}px 'JetBrains Mono',monospace`;
+      ctx.fillStyle = s.color;
+      ctx.textBaseline = 'top';
+      ctx.fillText(`${dw}×${dh}px`, px(lcx), py(lcy) + 3);
+    }
   });
 
-  // draw hidden slices faded (so you know they exist)
+  // draw hidden slices faded
   slices.forEach((s) => {
     if (s.visible) return;
-    ctx.globalAlpha = 0.15;
+    ctx.globalAlpha = 0.2;
     ctx.beginPath();
-    s.points.forEach((p,j)=>{const sx=(p.x-minX)*sc,sy=(p.y-minY)*sc;j===0?ctx.moveTo(sx,sy):ctx.lineTo(sx,sy);});
+    s.points.forEach((p, j) => {
+      j === 0 ? ctx.moveTo(px(p.x), py(p.y)) : ctx.lineTo(px(p.x), py(p.y));
+    });
     ctx.closePath();
     ctx.strokeStyle = s.color; ctx.lineWidth = 1;
     ctx.stroke();
@@ -770,73 +908,73 @@ function renderPreview() {
 
   // ── Bounding box del slice activo ──
   if (activeIdx >= 0 && activeIdx < slices.length) {
-    const s = slices[activeIdx];
-    const xs = s.points.map(p=>p.x), ys = s.points.map(p=>p.y);
-    const bx0=(Math.min(...xs)-minX)*sc, by0=(Math.min(...ys)-minY)*sc;
-    const bx1=(Math.max(...xs)-minX)*sc, by1=(Math.max(...ys)-minY)*sc;
-    const bw=bx1-bx0, bh=by1-by0;
+    const s   = slices[activeIdx];
+    const xs  = s.points.map(p => p.x), ys = s.points.map(p => p.y);
+    const bx0 = px(Math.min(...xs)), by0 = py(Math.min(...ys));
+    const bx1 = px(Math.max(...xs)), by1 = py(Math.max(...ys));
+    const bw  = bx1 - bx0, bh = by1 - by0;
     const col = s.color;
 
-    // dashed rect
     ctx.save();
-    ctx.strokeStyle = col; ctx.lineWidth = 1;
-    ctx.setLineDash([4,3]);
+    ctx.strokeStyle = col; ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 3]);
     ctx.strokeRect(bx0, by0, bw, bh);
     ctx.restore();
 
-    // corner handles
-    const hs = 5;
-    [[bx0,by0],[bx1,by0],[bx1,by1],[bx0,by1]].forEach(([hx,hy]) => {
-      ctx.fillStyle = '#1a1d1a';
-      ctx.fillRect(hx-hs/2, hy-hs/2, hs, hs);
+    const hs = 6;
+    [[bx0,by0],[bx1,by0],[bx1,by1],[bx0,by1]].forEach(([hx, hy]) => {
+      ctx.fillStyle = '#131614';
+      ctx.fillRect(hx - hs/2, hy - hs/2, hs, hs);
       ctx.strokeStyle = col; ctx.lineWidth = 1.5; ctx.setLineDash([]);
-      ctx.strokeRect(hx-hs/2, hy-hs/2, hs, hs);
+      ctx.strokeRect(hx - hs/2, hy - hs/2, hs, hs);
     });
 
-    // dimension labels
-    const outW = parseFloat(document.getElementById('opt-w').value)||svgVB.w;
-    const outH = parseFloat(document.getElementById('opt-h').value)||svgVB.h;
-    const realW = Math.round((Math.max(...xs)-Math.min(...xs)) * outW/svgVB.w);
-    const realH = Math.round((Math.max(...ys)-Math.min(...ys)) * outH/svgVB.h);
-    ctx.fillStyle = col;
-    ctx.font = `500 9px 'JetBrains Mono',monospace`;
-    ctx.textAlign='center'; ctx.textBaseline='bottom';
-    ctx.fillText(`${realW}px`, bx0+bw/2, by0-4);
-    ctx.textAlign='left'; ctx.textBaseline='middle';
-    ctx.fillText(`${realH}px`, bx1+5, by0+bh/2);
+    const outW  = parseFloat(document.getElementById('opt-w').value) || svgVB.w;
+    const outH  = parseFloat(document.getElementById('opt-h').value) || svgVB.h;
+    const realW = Math.round((Math.max(...xs) - Math.min(...xs)) * outW / svgVB.w);
+    const realH = Math.round((Math.max(...ys) - Math.min(...ys)) * outH / svgVB.h);
+    ctx.fillStyle = '#eaf0ea';
+    ctx.font = `500 ${fSub}px 'JetBrains Mono',monospace`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+    ctx.fillText(`${realW}px`, bx0 + bw/2, by0 - 5);
+    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillText(`${realH}px`, bx1 + 6, by0 + bh/2);
   }
 
   // ── Overlay de resolución ──
   if (showOverlay) {
-    const outW = parseFloat(document.getElementById('opt-w').value)||svgVB.w;
-    const outH = parseFloat(document.getElementById('opt-h').value)||svgVB.h;
-    const aspect = outW/outH;
-    const fw = Math.min(cW, cH * aspect);
-    const fh = fw / aspect;
-    const fx = (cW-fw)/2, fy = (cH-fh)/2;
     ctx.save();
-    ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 1;
-    ctx.setLineDash([6,4]);
-    ctx.strokeRect(fx+.5, fy+.5, fw-1, fh-1);
-    // corner marks
-    ctx.setLineDash([]); ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=1.5;
-    const cm=10;
-    [[fx,fy],[fx+fw,fy],[fx+fw,fy+fh],[fx,fy+fh]].forEach(([ox,oy],ci)=>{
-      const sx=ci===0||ci===3?1:-1, sy=ci<2?1:-1;
-      ctx.beginPath(); ctx.moveTo(ox+sx*cm,oy); ctx.lineTo(ox,oy); ctx.lineTo(ox,oy+sy*cm); ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,0.45)'; ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 4]);
+    ctx.strokeRect(1, 1, cW - 2, cH - 2);
+    ctx.setLineDash([]);
+    const cm = 14;
+    ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 1.5;
+    [[0,0],[cW,0],[cW,cH],[0,cH]].forEach(([ox, oy], ci) => {
+      const sx = ci===0||ci===3 ? 1 : -1, sy = ci < 2 ? 1 : -1;
+      ctx.beginPath();
+      ctx.moveTo(ox + sx*cm, oy); ctx.lineTo(ox, oy); ctx.lineTo(ox, oy + sy*cm);
+      ctx.stroke();
     });
     ctx.restore();
-    ctx.fillStyle='rgba(255,255,255,0.22)';
-    ctx.font=`500 9px 'JetBrains Mono',monospace`;
-    ctx.textAlign='left'; ctx.textBaseline='top';
-    ctx.fillText(`${Math.round(outW)} × ${Math.round(outH)} px`, fx+6, fy+6);
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.font = `500 ${fSub}px 'JetBrains Mono',monospace`;
+    ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillText(`${Math.round(docW)} × ${Math.round(docH)} px`, 10, 10);
   }
 
-  document.getElementById('preview-dim').textContent = `${Math.round(dW)} × ${Math.round(dH)} px`;
+  document.getElementById('preview-dim').textContent = `${Math.round(svgVB.w)} × ${Math.round(svgVB.h)} px`;
 }
 
 function toggleOverlay() {
   showOverlay = !showOverlay;
+  renderPreview();
+}
+
+function toggleDimensions() {
+  showDimensions = !showDimensions;
+  const btn = document.getElementById('dim-toggle-btn');
+  if (btn) btn.classList.toggle('active', showDimensions);
   renderPreview();
 }
 
@@ -860,6 +998,11 @@ function clearAll() {
   renderList(); renderPreview();
   document.getElementById('btn-export').disabled = true;
   document.getElementById('file-input').value = '';
+  showDimensions = false;
+  const cc2 = document.getElementById('canvas-controls');
+  if (cc2) cc2.style.display = 'none';
+  const dtb = document.getElementById('dim-toggle-btn');
+  if (dtb) { dtb.disabled = true; dtb.classList.remove('active'); }
   setStatus('Importa un SVG para comenzar.','');
 }
 
@@ -905,8 +1048,10 @@ ${t}</ParamRange>`;
 }
 
 function makeSliceXML(s, scaleX, scaleY, uid) {
-  const xs=s.points.map(p=>r2(p.x*scaleX));
-  const ys=s.points.map(p=>r2(p.y*scaleY));
+  // Resta el origen del viewBox antes de escalar: Illustrator puede exportar
+  // artboards con origen distinto de 0,0 (ej. viewBox="-10 -10 1920 1080")
+  const xs=s.points.map(p=>r2((p.x-svgVB.x)*scaleX));
+  const ys=s.points.map(p=>r2((p.y-svgVB.y)*scaleY));
   const x0=Math.min(...xs),y0=Math.min(...ys);
   const x1=Math.max(...xs),y1=Math.max(...ys);
   const w=x1-x0,h=y1-y0;
