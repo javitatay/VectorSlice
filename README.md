@@ -3,8 +3,7 @@
 **Convierte vectores de Illustrator en Slices de Resolume Arena.**  
 Sin redibujar. Sin plugins. Dos vías: navegador o script nativo de Illustrator.
 
-🔗 **[Abrir VectorSlice →](https://javitatay.github.io/VectorSlice/)**  
-📥 **[Descargar script para Illustrator →](https://javitatay.github.io/VectorSlice/#descargar-script)**
+🔗 **[Abrir VectorSlice →](https://javitatay.github.io/VectorSlice/)**
 
 ---
 
@@ -101,7 +100,7 @@ Si trabajas en Illustrator, puedes generar el XML directamente desde el menú `F
 
 **Opción 1 — Ejecución puntual** (no requiere instalar nada):
 
-1. Descarga [`VectorSlice.jsx`](https://javitatay.github.io/VectorSlice/#descargar-script) desde la web (un click en el botón "Descargar VectorSlice.jsx")
+1. Abre [VectorSlice en la web](https://javitatay.github.io/VectorSlice/) y descarga el script desde el botón **"Descargar VectorSlice.jsx"** del panel lateral
 2. En Illustrator: `File > Scripts > Other Script…` (`Cmd/Ctrl + F12`)
 3. Selecciona el archivo `.jsx`
 
