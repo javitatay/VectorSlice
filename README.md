@@ -4,7 +4,7 @@
 Sin redibujar. Sin plugins. Dos vías: navegador o script nativo de Illustrator.
 
 🔗 **[Abrir VectorSlice →](https://javitatay.github.io/VectorSlice/)**  
-📥 **[Descargar script para Illustrator →](https://raw.githubusercontent.com/javitatay/VectorSlice/main/VectorSlice.jsx)**
+📥 **[Descargar script para Illustrator →](https://javitatay.github.io/VectorSlice/#descargar-script)**
 
 ---
 
@@ -101,7 +101,7 @@ Si trabajas en Illustrator, puedes generar el XML directamente desde el menú `F
 
 **Opción 1 — Ejecución puntual** (no requiere instalar nada):
 
-1. Descarga [`VectorSlice.jsx`](https://raw.githubusercontent.com/javitatay/VectorSlice/main/VectorSlice.jsx)
+1. Descarga [`VectorSlice.jsx`](https://javitatay.github.io/VectorSlice/#descargar-script) desde la web (un click en el botón "Descargar VectorSlice.jsx")
 2. En Illustrator: `File > Scripts > Other Script…` (`Cmd/Ctrl + F12`)
 3. Selecciona el archivo `.jsx`
 

@@ -205,6 +205,13 @@ main {
 }
 .ai-block-info:hover { color: var(--accent-dk); }
 
+/* Highlight cuando se llega via #descargar-script desde el README */
+@keyframes ai-block-flash {
+  0%, 100% { background: var(--surface); box-shadow: inset 0 0 0 0 var(--accent); }
+  20%, 60% { background: var(--accent-lt); box-shadow: inset 3px 0 0 0 var(--accent); }
+}
+.ai-block.flash { animation: ai-block-flash 2.4s ease-in-out 1; }
+
 /* SLICE ITEM */
 .slice-item {
   display: flex; align-items: center; gap: 8px;
@@ -446,7 +453,7 @@ button {
       <div class="empty-msg">Importa un SVG para<br>ver los slices detectados</div>
     </div>
 
-    <div class="ai-block">
+    <div class="ai-block" id="descargar-script">
       <div class="ai-block-header">
         <div class="ai-block-icon" aria-hidden="true">
           <svg viewBox="0 0 16 16"><path d="M3 1h7l3 3v11H3V1zm6.5.5V4H12L9.5 1.5zM5 7h6v1H5V7zm0 2.5h6v1H5v-1zm0 2.5h4v1H5v-1z"/></svg>
@@ -1411,6 +1418,24 @@ async function downloadJSX(btn) {
     setIdle();
   }
 }
+
+// ── HASH #descargar-script ──
+// Si el usuario llega desde el README, hace scroll suave al bloque del .jsx
+// y lo destaca brevemente con un flash de fondo.
+function focusDownloadBlock() {
+  const el = document.getElementById('descargar-script');
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  el.classList.remove('flash');
+  void el.offsetWidth;        // forzar reflow para reiniciar la animación
+  el.classList.add('flash');
+}
+if (window.location.hash === '#descargar-script') {
+  window.addEventListener('load', () => setTimeout(focusDownloadBlock, 250));
+}
+window.addEventListener('hashchange', () => {
+  if (window.location.hash === '#descargar-script') focusDownloadBlock();
+});
 
 window.addEventListener('resize',()=>{if(slices.length)renderPreview();});
 </script>
