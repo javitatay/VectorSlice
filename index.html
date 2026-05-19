@@ -459,14 +459,12 @@ button {
         Este script lee los paths del documento activo y genera el XML
         directamente desde Illustrator.
       </div>
-      <a class="ai-block-btn"
-         href="https://raw.githubusercontent.com/javitatay/VectorSlice/main/VectorSlice.jsx"
-         download="VectorSlice.jsx">
+      <button class="ai-block-btn" type="button" onclick="downloadJSX(this)">
         <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M7 2v8M4 7l3 3 3-3M2 12h10"/>
         </svg>
-        Descargar VectorSlice.jsx
-      </a>
+        <span>Descargar VectorSlice.jsx</span>
+      </button>
       <a class="ai-block-info"
          href="https://github.com/javitatay/VectorSlice/blob/main/VectorSlice.jsx"
          target="_blank" rel="noopener">
@@ -1380,6 +1378,39 @@ function xe(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function r2(n){return Math.round(n*100)/100;}
 function setStatus(msg,type=''){const el=document.getElementById('status');el.textContent=msg;el.className=type;}
+
+// ── DESCARGA DEL SCRIPT .JSX ──
+// Estrategia: intenta descargar el .jsx local (mismo origen → GitHub Pages sirve
+// el archivo si está en el repo). Si no existe, abre el archivo en GitHub como
+// fallback. Nota: GitHub raw no permite CORS, así que no es viable como fuente
+// directa desde otro dominio — depende de que el .jsx esté en el mismo origen.
+async function downloadJSX(btn) {
+  const FILENAME    = 'VectorSlice.jsx';
+  const LOCAL_URL   = './VectorSlice.jsx';
+  const GITHUB_URL  = 'https://github.com/javitatay/VectorSlice/blob/main/VectorSlice.jsx';
+  const label = btn?.querySelector('span');
+  const original = label?.textContent;
+  const setBusy = txt => { if (label) label.textContent = txt; btn.disabled = true; };
+  const setIdle = ()  => { if (label) label.textContent = original; btn.disabled = false; };
+
+  setBusy('Descargando…');
+  try {
+    const res = await fetch(LOCAL_URL, { cache: 'no-cache' });
+    if (!res.ok) throw new Error('not-found');
+    const text = await res.text();
+    const blob = new Blob([text], { type: 'application/javascript;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = FILENAME;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setIdle();
+  } catch (err) {
+    console.warn('VectorSlice.jsx no disponible en el mismo origen, abriendo GitHub:', err);
+    window.open(GITHUB_URL, '_blank', 'noopener');
+    setIdle();
+  }
+}
 
 window.addEventListener('resize',()=>{if(slices.length)renderPreview();});
 </script>
