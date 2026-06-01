@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="banner.png" alt="VectorSlice" width="100%">
+
 # VectorSlice
 
 **Convierte vectores de Illustrator en Slices de Resolume Arena.**
