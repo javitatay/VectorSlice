@@ -1,19 +1,28 @@
+<div align="center">
+
 # VectorSlice
 
-**Convierte vectores de Illustrator en Slices de Resolume Arena.**  
-Sin redibujar. Sin plugins. Dos vías: navegador o script nativo de Illustrator.
+**Convierte vectores de Illustrator en Slices de Resolume Arena.**
 
-🔗 **[Abrir VectorSlice →](https://javitatay.github.io/VectorSlice/)**
+Sin redibujar. Sin plugins. Dos vías: navegador o script nativo de Illustrator. Funciona sin conexión.
+
+[![Abrir en el navegador](https://img.shields.io/badge/🌐_Abrir_en_el_navegador-141210?style=for-the-badge)](https://javitatay.github.io/VectorSlice/)
+
+![plataforma](https://img.shields.io/badge/plataforma-Web%20·%20Illustrator-c89838?style=flat-square) ![resolume](https://img.shields.io/badge/Resolume%20Arena-7.0+-green?style=flat-square) ![offline](https://img.shields.io/badge/offline-sí-orange?style=flat-square) [![Licencia: GPL v3](https://img.shields.io/badge/Licencia-GPLv3-c89838?style=flat-square)](LICENSE)
+
+</div>
 
 ---
 
-## El problema que resuelve
+## ¿Qué resuelve?
 
-Cuando haces mapping en Resolume Arena, necesitas dibujar manualmente cada pantalla o superficie en el Advanced Output como un Slice. Si el diseño viene de Illustrator, el proceso tradicional es redibujar punto por punto. VectorSlice elimina ese paso.
+Cuando haces mapping en Resolume Arena, necesitas dibujar manualmente cada pantalla o superficie en el Advanced Output como un Slice. Si el diseño viene de Illustrator, el proceso tradicional es redibujar punto por punto. **VectorSlice elimina ese paso.**
 
-## Pipelines
+---
 
-Dos formas de llegar al mismo XML, elige la que mejor encaje con tu flujo:
+## 🔀 Pipelines
+
+Dos formas de llegar al mismo XML; elige la que mejor encaje con tu flujo:
 
 ```
 Vía A:  Illustrator  →  Exportar SVG  →  VectorSlice (web)  →  XML  →  Resolume Arena
@@ -32,18 +41,17 @@ Vía B:  Illustrator  →  VectorSlice.jsx  ────────────
 
 ---
 
-## Vía A — Web
+## 🌐 Vía A — Web
 
 ### 1. Prepara el SVG en Illustrator
 
-- Dibuja tus formas vectoriales — cada shape se convierte en un Slice en Resolume
-- **Nombra cada capa o shape** — ese nombre se convierte en el ID del Slice
-- Exporta: `File > Export > Export As > SVG`
+- Dibuja tus formas vectoriales — cada shape se convierte en un Slice en Resolume.
+- **Nombra cada capa o shape** — ese nombre se convierte en el ID del Slice.
+- Exporta: `File > Export > Export As > SVG`.
 
 ### 2. Abre VectorSlice
 
-Abre `index.html` en el navegador, o accede a la versión online.  
-No requiere instalación ni conexión a internet.
+Abre `index.html` en el navegador, o accede a la versión online. No requiere instalación ni conexión a internet.
 
 ### 3. Importa el SVG
 
@@ -92,7 +100,7 @@ Reinicia Resolume Arena. El preset aparecerá en la lista de Screen Setups con e
 
 ---
 
-## Vía B — Script de Illustrator
+## 🖋️ Vía B — Script de Illustrator
 
 Si trabajas en Illustrator, puedes generar el XML directamente desde el menú `File > Scripts` sin pasar por SVG.
 
@@ -100,9 +108,9 @@ Si trabajas en Illustrator, puedes generar el XML directamente desde el menú `F
 
 **Opción 1 — Ejecución puntual** (no requiere instalar nada):
 
-1. Abre [VectorSlice en la web](https://javitatay.github.io/VectorSlice/) y descarga el script desde el botón **"Descargar VectorSlice.jsx"** del panel lateral
-2. En Illustrator: `File > Scripts > Other Script…` (`Cmd/Ctrl + F12`)
-3. Selecciona el archivo `.jsx`
+1. Abre [VectorSlice en la web](https://javitatay.github.io/VectorSlice/) y descarga el script desde el botón **"Descargar VectorSlice.jsx"** del panel lateral.
+2. En Illustrator: `File > Scripts > Other Script…` (`Cmd/Ctrl + F12`).
+3. Selecciona el archivo `.jsx`.
 
 **Opción 2 — Instalación permanente en el menú:**
 
@@ -117,14 +125,14 @@ Reinicia Illustrator. Aparecerá en `File > Scripts > VectorSlice`.
 
 ### Uso
 
-1. Abre el documento con tus shapes en Illustrator
-2. Nombra cada path o capa — ese nombre será el ID del Slice
-3. Ejecuta el script
+1. Abre el documento con tus shapes en Illustrator.
+2. Nombra cada path o capa — ese nombre será el ID del Slice.
+3. Ejecuta el script.
 4. En el diálogo configura:
-   - **Subdivisión de curvas** (default 8 — sube a 12–16 para curvas muy detalladas)
-   - **Resolución de salida** (botón *"Usar dimensiones del artboard"* para autorrellenar)
-   - **Destino**: elegir ubicación manual o guardar directamente en la carpeta de presets de Resolume
-5. Click en *Exportar XML*
+   - **Subdivisión de curvas** (default 8 — sube a 12–16 para curvas muy detalladas).
+   - **Resolución de salida** (botón *"Usar dimensiones del artboard"* para autorrellenar).
+   - **Destino**: elegir ubicación manual o guardar directamente en la carpeta de presets de Resolume.
+5. Click en *Exportar XML*.
 
 ### Qué procesa y qué ignora
 
@@ -152,7 +160,7 @@ Si no la encuentra, hace fallback al diálogo manual. Tras guardar, **reinicia R
 
 ---
 
-## Shapes soportados (Vía A — Web)
+## 🔷 Shapes soportados (Vía A — Web)
 
 | Tipo | Soporte |
 |------|---------|
@@ -164,7 +172,7 @@ Si no la encuentra, hace fallback al diálogo manual. Tras guardar, **reinicia R
 
 ---
 
-## Opciones
+## ⚙️ Opciones
 
 | Opción | Descripción |
 |--------|-------------|
@@ -175,7 +183,7 @@ Ambas opciones existen tanto en la web como en el script de Illustrator.
 
 ---
 
-## Compatibilidad
+## ✅ Compatibilidad
 
 | Software | Versión mínima |
 |----------|---------------|
@@ -183,67 +191,76 @@ Ambas opciones existen tanto en la web como en el script de Illustrator.
 | Resolume Arena | 7.0+ |
 | Navegador | Chrome 90+, Firefox 88+, Edge 90+ |
 
-> ⚠️ No compatible con Resolume Avenue (no tiene Advanced Output)
+> ⚠️ No compatible con Resolume Avenue (no tiene Advanced Output).
 
 ---
 
-## Estructura del repositorio
+## 🩺 Troubleshooting
+
+### Vía A — Web
+
+**No detecta slices**
+Verifica que las formas sean paths vectoriales. Exporta el SVG con la opción *Preserve Illustrator Editing Capabilities* desactivada para obtener un SVG más limpio.
+
+**La resolución detectada no coincide con el artboard**
+VectorSlice lee el `viewBox` del SVG, que es la fuente de verdad para las coordenadas internas. Si Illustrator exporta `width`/`height` en unidades físicas (pt, mm) sin `viewBox`, la conversión se hace a 96 dpi. En caso de duda, verifica que el SVG exportado incluya el atributo `viewBox`.
+
+**Los slices ocultos no aparecen en el XML**
+Es el comportamiento esperado — los slices con visibilidad desactivada se excluyen del export. Actívalos antes de exportar si los necesitas.
+
+### Vía B — Script Illustrator
+
+**"No se encontraron paths válidos"**
+Asegúrate de tener al menos un shape vectorial en el artboard activo. Comprueba que las capas no estén ocultas o bloqueadas. Si solo tienes texto, convírtelo a curvas (`Type > Create Outlines`).
+
+**Las coordenadas no cuadran en Resolume**
+Usa el botón *"Usar dimensiones del artboard"* en lugar de poner valores manuales. Verifica que tu artboard tenga la misma proporción que tu salida en Resolume.
+
+**El script solo procesa una parte del documento**
+Por diseño, el script procesa únicamente el **artboard activo**. Para exportar otros artboards, cámbialos como activos y ejecuta el script varias veces.
+
+### General
+
+**Las curvas se ven angulosas en Resolume**
+Aumenta el valor de "Precisión de curvas" / "Subdivisión de curvas" a 12–16 antes de exportar.
+
+**Resolume no importa el XML**
+Confirma que usas Resolume Arena 7 (no Avenue ni versión 6). Reinicia Resolume tras copiar el preset a la carpeta `screensetup/`.
+
+---
+
+## 🛠️ Para desarrolladores
+
+La herramienta web es un único archivo HTML autocontenido: no necesita servidor, build tools ni dependencias externas, y funciona offline. El script `.jsx` es ExtendScript puro (ES3), sin dependencias, compatible con cualquier versión moderna de Illustrator.
 
 ```
 vectorslice/
 ├── index.html        — Aplicación web (standalone, sin dependencias)
 ├── VectorSlice.jsx   — Script ExtendScript para Adobe Illustrator
+├── LICENSE
 └── README.md
 ```
 
-La herramienta web es un único archivo HTML autocontenido. No necesita servidor, build tools ni dependencias externas. Funciona offline.
+---
 
-El script `.jsx` es ExtendScript puro (ES3), sin dependencias, compatible con cualquier versión moderna de Illustrator.
+## 📄 Licencia
+
+VectorSlice se distribuye bajo la licencia **[GNU General Public License v3.0](LICENSE)**.
+
+Eres libre de usar, estudiar, modificar y compartir este software. La única condición importante es que, si distribuyes una versión modificada, debe mantenerse también como código abierto bajo esta misma licencia, para que las mejoras sigan estando disponibles para todos.
+
+[![Licencia: GPL v3](https://img.shields.io/badge/Licencia-GPLv3-c89838?style=flat-square)](LICENSE)
 
 ---
 
-## Troubleshooting
+## ✉️ Contacto
 
-### Vía A — Web
-
-**No detecta slices**  
-Verifica que las formas sean paths vectoriales. Exporta el SVG con la opción *Preserve Illustrator Editing Capabilities* desactivada para obtener un SVG más limpio.
-
-**La resolución detectada no coincide con el artboard**  
-VectorSlice lee el `viewBox` del SVG, que es la fuente de verdad para las coordenadas internas. Si Illustrator exporta `width`/`height` en unidades físicas (pt, mm) sin `viewBox`, la conversión se hace a 96 dpi. En caso de duda, verifica que el SVG exportado incluya el atributo `viewBox`.
-
-**Los slices ocultos no aparecen en el XML**  
-Es el comportamiento esperado — los slices con visibilidad desactivada se excluyen del export. Actívalos antes de exportar si los necesitas.
-
-### Vía B — Script Illustrator
-
-**"No se encontraron paths válidos"**  
-Asegúrate de tener al menos un shape vectorial en el artboard activo. Comprueba que las capas no estén ocultas o bloqueadas. Si solo tienes texto, convírtelo a curvas (`Type > Create Outlines`).
-
-**Las coordenadas no cuadran en Resolume**  
-Usa el botón *"Usar dimensiones del artboard"* en lugar de poner valores manuales. Verifica que tu artboard tenga la misma proporción que tu salida en Resolume.
-
-**El script solo procesa una parte del documento**  
-Por diseño, el script procesa únicamente el **artboard activo**. Para exportar otros artboards, cámbialos como activos y ejecuta el script varias veces.
-
-### General
-
-**Las curvas se ven angulosas en Resolume**  
-Aumenta el valor de "Precisión de curvas" / "Subdivisión de curvas" a 12–16 antes de exportar.
-
-**Resolume no importa el XML**  
-Confirma que usas Resolume Arena 7 (no Avenue ni versión 6). Reinicia Resolume tras copiar el preset a la carpeta `screensetup/`.
-
----
-
-## Autoría
-
-**Javier Tatay Rubio**  
-Profesor · CFGM Video DJ · Animación Visual en Vivo  
+**Javier Tatay Rubio** · Profesor · CFGM Vídeo DJ · Animación Visual en Vivo
+📧 j.tatayrubio@edu.gva.es
 [javitatay.github.io](https://javitatay.github.io) · [AVV Lab](https://javitatay.github.io/AVV)
 
 ---
 
-## Licencia
-
-MIT — libre de usar, modificar y distribuir.
+<div align="center">
+<sub>Hecho para mapping y producción audiovisual · VectorSlice · 2026</sub>
+</div>
