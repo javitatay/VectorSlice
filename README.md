@@ -9,6 +9,7 @@
 Sin redibujar. Sin plugins. Dos vías: navegador o script nativo de Illustrator. Funciona sin conexión.
 
 [![Abrir en el navegador](https://img.shields.io/badge/🌐_Abrir_en_el_navegador-141210?style=for-the-badge)](https://javitatay.github.io/VectorSlice/)
+[![Invítame a un café](https://img.shields.io/badge/☕_Invítame_a_un_café-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=000)](https://buymeacoffee.com/javitatay)
 
 ![plataforma](https://img.shields.io/badge/plataforma-Web%20·%20Illustrator-c89838?style=flat-square) ![resolume](https://img.shields.io/badge/Resolume%20Arena-7.0+-green?style=flat-square) ![offline](https://img.shields.io/badge/offline-sí-orange?style=flat-square) [![Licencia: GPL v3](https://img.shields.io/badge/Licencia-GPLv3-c89838?style=flat-square)](LICENSE)
 
