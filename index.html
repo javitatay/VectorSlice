@@ -1,15 +1,30 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" style="color-scheme: dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="Javier Tatay Rubio">
 <meta name="description" content="Convierte vectores SVG de Illustrator en Slices de Resolume Arena. Sin instalación, directo en el navegador.">
+<meta name="theme-color" content="#131614">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <title>VectorSlice — SVG to Resolume Arena</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Focus visible global — ring de 2px en accent sin outline en click */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Touch: eliminar delay de double-tap y highlight nativo */
+button, [role="button"], input, a {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
 
 :root {
   --bg:        #131614;
@@ -59,7 +74,7 @@ header {
   flex-shrink: 0;
 }
 .logo-mark svg { width: 15px; height: 15px; fill: white; }
-.logo-name { font-size: 16px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
+.logo-name { font-size: 16px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; line-height: 1; }
 .logo-sep  { color: var(--border); margin: 0 4px; font-size: 18px; }
 .logo-sub  { font-family: var(--mono); font-size: 12px; color: var(--text-dim); }
 
@@ -95,6 +110,14 @@ main {
   padding: 2px 9px;
   background: var(--accent-lt); color: var(--accent-dk);
   border-radius: 10px; font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Utilidad accesibilidad: visualmente oculto pero legible por screen readers */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
 }
 
 /* DROP ZONE */
@@ -105,13 +128,67 @@ main {
   padding: 22px 16px;
   text-align: center;
   cursor: pointer;
-  transition: border-color 0.12s ease-out, background 0.12s ease-out;
+  transition: border-color 0.12s ease-out, background 0.12s ease-out,
+              padding 0.15s ease-out, margin 0.15s ease-out;
   flex-shrink: 0;
 }
-/* .drag-over es JS-triggered (dragover event) — no hover, se mantiene fuera del guard */
+/* .drag-over es JS-triggered (dragover event) — fuera del hover guard */
 #dropzone.drag-over {
   border-color: var(--accent); background: var(--accent-lt);
 }
+
+/* Estado "cargado" — compacto, borde sólido, muestra nombre de archivo */
+#dropzone.loaded {
+  padding: 8px 12px;
+  border-style: solid;
+  border-color: var(--border);
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 8px 16px;
+}
+#dropzone.loaded .drop-icon,
+#dropzone.loaded .drop-title,
+#dropzone.loaded .drop-hint { display: none; }
+.dz-loaded-content {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+#dropzone.loaded .dz-loaded-content { display: flex; }
+.dz-file-icon {
+  flex-shrink: 0;
+  color: var(--accent-dk);
+  display: flex; align-items: center;
+}
+.dz-file-icon svg { width: 13px; height: 13px; fill: currentColor; }
+.dz-file-name {
+  font-family: var(--mono); font-size: 12px;
+  color: var(--text); flex: 1; min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.dz-replace {
+  font-family: var(--mono); font-size: 11px;
+  color: var(--text-dim); flex-shrink: 0;
+  transition: color 0.12s ease-out;
+}
+
+/* Warning de nombres duplicados */
+.dup-warning {
+  display: none;
+  align-items: center; gap: 6px;
+  padding: 6px 16px;
+  font-family: var(--mono); font-size: 11px;
+  color: #e0943a;
+  background: rgba(224, 148, 58, 0.08);
+  border-bottom: 1px solid rgba(224, 148, 58, 0.18);
+  flex-shrink: 0;
+}
+.dup-warning svg { flex-shrink: 0; }
+
 .drop-icon { width: 28px; height: 28px; margin: 0 auto 10px; opacity: 0.4; }
 .drop-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
 .drop-hint  { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
@@ -266,11 +343,13 @@ main {
   font-family: var(--mono); font-size: 13px; font-weight: 500;
   color: var(--text); background: var(--bg);
   border: 1px solid var(--accent); border-radius: 2px;
-  padding: 1px 5px; width: 100%; outline: none;
+  padding: 1px 5px; width: 100%;
+  outline: none; /* reemplazado por :focus-visible global */
 }
 .slice-pts {
   font-family: var(--mono); font-size: 11px;
   color: var(--text-dim); margin-top: 1px;
+  font-variant-numeric: tabular-nums;
 }
 
 .slice-del {
@@ -348,7 +427,11 @@ input[type="number"] {
   padding: 5px 8px; border-radius: var(--radius); width: 66px;
   transition: border-color 0.15s;
 }
-input[type="number"]:focus { outline: none; border-color: var(--accent); }
+input[type="number"]:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-color: var(--accent);
+}
 
 /* FOOTER */
 footer {
@@ -430,6 +513,8 @@ button {
 /* ── Hover guard: evita que touch devices queden pegados en estado :hover ── */
 @media (hover: hover) and (pointer: fine) {
   #dropzone:hover                    { border-color: var(--accent); background: var(--accent-lt); }
+  #dropzone.loaded:hover             { border-color: var(--text-dim); background: transparent; }
+  #dropzone.loaded:hover .dz-replace { color: var(--accent-dk); }
   .toggle-btn:hover:not(:disabled)   { border-color: var(--text-dim); color: var(--text); }
   #overlay-btn:hover                 { border-color: var(--text-dim); color: var(--text); }
   #overlay-btn.active                { border-color: var(--accent); color: var(--accent-dk); background: var(--accent-lt); }
@@ -468,12 +553,12 @@ button {
 
 <header>
   <div class="logo">
-    <div class="logo-mark">
+    <div class="logo-mark" aria-hidden="true">
       <svg viewBox="0 0 16 16"><path d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9l3 3-3 3V9z"/></svg>
     </div>
-    <span class="logo-name">VectorSlice</span>
-    <span class="logo-sep">·</span>
-    <span class="logo-sub">SVG → Resolume Arena</span>
+    <h1 class="logo-name" translate="no">VectorSlice</h1>
+    <span class="logo-sep" aria-hidden="true">·</span>
+    <span class="logo-sub" translate="no">SVG → Resolume Arena</span>
   </div>
 </header>
 
@@ -484,14 +569,36 @@ button {
       <span class="pill" id="count-pill">0</span>
     </div>
 
-    <div id="dropzone" onclick="document.getElementById('file-input').click()">
-      <svg class="drop-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5">
+    <label for="file-input" class="sr-only">Seleccionar archivo SVG</label>
+    <div id="dropzone"
+         role="button"
+         tabindex="0"
+         aria-label="Arrastra o selecciona un archivo SVG"
+         onclick="document.getElementById('file-input').click()"
+         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();document.getElementById('file-input').click()}">
+      <svg class="drop-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
         <path d="M14 4v16M8 14l6 6 6-6M4 24h20" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <div class="drop-title">Arrastra el SVG aquí</div>
       <div class="drop-hint">o haz click para seleccionar</div>
+      <!-- Estado cargado: compacto con nombre de archivo -->
+      <div class="dz-loaded-content">
+        <span class="dz-file-icon" aria-hidden="true">
+          <svg viewBox="0 0 14 14"><path d="M2 1h7.5L12 3.5V13H2V1zm5.5.75V4H10L7.5 1.75zM4 6h6v1H4V6zm0 2h6v1H4V8zm0 2h4v1H4v-1z"/></svg>
+        </span>
+        <span class="dz-file-name" id="dz-file-name">—</span>
+        <span class="dz-replace">Reemplazar</span>
+      </div>
     </div>
     <input type="file" id="file-input" accept=".svg">
+
+    <!-- Warning de nombres duplicados — visible solo cuando hay conflicto -->
+    <div class="dup-warning" id="dup-warning">
+      <svg viewBox="0 0 12 12" width="11" height="11" fill="currentColor">
+        <path d="M6 .5L11.5 10.5H.5L6 .5zm-.5 3.5v3h1V4H5.5zm0 4v1h1V8H5.5z"/>
+      </svg>
+      Nombres duplicados — conflicto en Resolume
+    </div>
 
     <div class="slices-hint" id="slices-hint">Cada fila es una <b>capa del SVG</b> — su nombre se usará como ID del Slice en Resolume. Doble click para renombrar.</div>
     <div class="slices-list" id="slices-list">
@@ -512,7 +619,7 @@ button {
         directamente desde Illustrator.
       </div>
       <button class="ai-block-btn" type="button" onclick="downloadJSX(this)">
-        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M7 2v8M4 7l3 3 3-3M2 12h10"/>
         </svg>
         <span>Descargar VectorSlice.jsx</span>
@@ -549,15 +656,15 @@ button {
 
     <div class="options-bar">
       <div class="opt-group">
-        <span class="opt-label" title="Cuántos segmentos rectos se usan para aproximar cada curva Bézier. Más = curvas más suaves, pero más puntos en el XML. El valor 8 es suficiente para la mayoría de casos.">Precisión de curvas</span>
-        <input type="number" id="opt-sub" value="8" min="2" max="32" title="Segmentos por curva Bézier (2–32). Valor recomendado: 8">
+        <label class="opt-label" for="opt-sub" title="Cuántos segmentos rectos se usan para aproximar cada curva Bézier. Más = curvas más suaves, pero más puntos en el XML. El valor 8 es suficiente para la mayoría de casos.">Precisión de curvas</label>
+        <input type="number" id="opt-sub" name="curve-precision" value="8" min="2" max="32" autocomplete="off" title="Segmentos por curva Bézier (2–32). Valor recomendado: 8">
       </div>
       <div class="opt-group">
-        <span class="opt-label">Resolución de salida</span>
-        <input type="number" id="opt-w" value="1920" min="1">
-        <span class="opt-label">×</span>
-        <input type="number" id="opt-h" value="1080" min="1">
-        <span class="opt-label">px</span>
+        <label class="opt-label" for="opt-w">Resolución de salida</label>
+        <input type="number" id="opt-w" name="output-width" value="1920" min="1" autocomplete="off" aria-label="Ancho de salida en píxeles">
+        <span class="opt-label" aria-hidden="true">×</span>
+        <input type="number" id="opt-h" name="output-height" value="1080" min="1" autocomplete="off" aria-label="Alto de salida en píxeles">
+        <span class="opt-label" aria-hidden="true">px</span>
       </div>
     </div>
   </div>
@@ -565,11 +672,11 @@ button {
 
 <footer>
   <div class="footer-left">
-    <div id="status">Importa un SVG para comenzar.</div>
+    <div id="status" aria-live="polite" aria-atomic="true">Importa un SVG para comenzar.</div>
     <a class="footer-author" href="https://github.com/javitatay" target="_blank">github.com/javitatay</a>
   </div>
   <div class="btn-row">
-    <button class="btn-ghost" onclick="clearAll()">Limpiar</button>
+    <button class="btn-ghost" onclick="confirmClear()" id="btn-clear">Borrar todo</button>
     <div class="export-wrap">
       <button class="btn-primary" id="btn-export" onclick="toggleExportMenu()" disabled>Exportar ▾</button>
       <div class="export-menu" id="export-menu">
@@ -598,9 +705,18 @@ let showOverlay = false;
 let showDimensions = false;
 
 const PALETTE = [
-  '#3d7a4e','#2c8a5a','#4a9465','#1f6b42',
-  '#5aac7a','#327a58','#6bbf8a','#256647',
-  '#3d8c60','#4fa070','#28724e','#57b07d'
+  '#52a868', // verde (accent)
+  '#4a9abf', // teal-azul
+  '#a868a8', // malva
+  '#a8a052', // oliva
+  '#5270a8', // azul
+  '#a87852', // naranja-tierra
+  '#52a896', // cian
+  '#a85268', // rosa oscuro
+  '#7aa852', // verde-lima
+  '#8552a8', // violeta
+  '#52a8a8', // turquesa
+  '#a89852', // dorado
 ];
 
 // ══════════════════════════════════════════════
@@ -718,6 +834,7 @@ function parseSVG(text) {
   if (!slices.length) { setStatus('No se encontraron shapes válidos.', 'err'); return; }
   activeIdx = -1;
   setStatus(`${slices.length} slice${slices.length!==1?'s':''} detectados — documento ${Math.round(svgVB.w)}×${Math.round(svgVB.h)} px.`, 'ok');
+  setDropzoneState(true, svgFileName);
   renderList(); renderPreview();
   document.getElementById('btn-export').disabled = false;
   const cc = document.getElementById('canvas-controls');
@@ -819,6 +936,14 @@ let dragSrcIdx = null;
 function renderList() {
   const list = document.getElementById('slices-list');
   document.getElementById('count-pill').textContent = slices.length;
+
+  // Detectar nombres duplicados → conflicto en Resolume
+  const nameCount = {};
+  slices.forEach(s => { nameCount[s.name] = (nameCount[s.name] || 0) + 1; });
+  const hasDups = Object.values(nameCount).some(c => c > 1);
+  const dupEl = document.getElementById('dup-warning');
+  if (dupEl) dupEl.style.display = hasDups ? 'flex' : 'none';
+
   const hint = document.getElementById('slices-hint');
   if (!slices.length) {
     if (hint) hint.style.display = 'none';
@@ -839,8 +964,12 @@ function renderList() {
       </div>
       <button class="slice-eye${!s.visible?' eye-off':''}"
               title="${s.visible?'Ocultar':'Mostrar'}"
+              aria-label="${s.visible?'Ocultar':'Mostrar'} slice ${esc(s.name)}"
+              aria-pressed="${!s.visible}"
               onclick="toggleVisible(event,${i})">${s.visible?'◉':'○'}</button>
-      <button class="slice-del" onclick="removeSlice(event,${i})">×</button>
+      <button class="slice-del"
+              aria-label="Eliminar slice ${esc(s.name)}"
+              onclick="removeSlice(event,${i})">×</button>
     </div>`).join('');
 
   list.querySelectorAll('.slice-item').forEach(el => {
@@ -1141,8 +1270,39 @@ function removeSlice(e, i) {
   }
 }
 
+// Confirmación antes de destruir todos los slices
+function confirmClear() {
+  const btn = document.getElementById('btn-clear');
+  if (!slices.length) return;
+  if (btn.dataset.confirm === '1') {
+    clearAll();
+    btn.textContent = 'Borrar todo';
+    delete btn.dataset.confirm;
+    return;
+  }
+  btn.textContent = '¿Confirmar?';
+  btn.dataset.confirm = '1';
+  setTimeout(() => {
+    btn.textContent = 'Borrar todo';
+    delete btn.dataset.confirm;
+  }, 2500);
+}
+
+function clearAll() {
+  const dz    = document.getElementById('dropzone');
+  const label = document.getElementById('dz-file-name');
+  if (loaded) {
+    dz.classList.add('loaded');
+    if (label) label.textContent = (name || 'archivo') + '.svg';
+  } else {
+    dz.classList.remove('loaded');
+    if (label) label.textContent = '—';
+  }
+}
+
 function clearAll() {
   slices=[]; activeIdx=-1; showOverlay=false;
+  setDropzoneState(false);
   renderList(); renderPreview();
   document.getElementById('btn-export').disabled = true;
   document.getElementById('file-input').value = '';
