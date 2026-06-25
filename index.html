@@ -105,10 +105,11 @@ main {
   padding: 22px 16px;
   text-align: center;
   cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
+  transition: border-color 0.12s ease-out, background 0.12s ease-out;
   flex-shrink: 0;
 }
-#dropzone:hover, #dropzone.drag-over {
+/* .drag-over es JS-triggered (dragover event) — no hover, se mantiene fuera del guard */
+#dropzone.drag-over {
   border-color: var(--accent); background: var(--accent-lt);
 }
 .drop-icon { width: 28px; height: 28px; margin: 0 auto 10px; opacity: 0.4; }
@@ -141,6 +142,15 @@ main {
   border-top: 1px solid var(--border);
   padding: 14px 16px 16px;
   background: var(--surface);
+  position: relative; /* needed for ::before flash overlay */
+}
+.ai-block::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--accent-lt);
+  box-shadow: inset 3px 0 0 0 var(--accent);
+  opacity: 0;
+  pointer-events: none;
 }
 .ai-block-header {
   display: flex; align-items: center; gap: 8px;
@@ -186,12 +196,7 @@ main {
   font-family: var(--sans); font-size: 12px; font-weight: 500;
   cursor: pointer;
   text-decoration: none;
-  transition: all 0.15s;
-}
-.ai-block-btn:hover {
-  border-color: var(--accent);
-  background: var(--accent-lt);
-  color: var(--accent-dk);
+  transition: background 0.12s ease-out, border-color 0.12s ease-out, color 0.12s ease-out;
 }
 .ai-block-btn svg { width: 13px; height: 13px; }
 .ai-block-info {
@@ -201,16 +206,19 @@ main {
   color: var(--text-dim);
   margin-top: 8px;
   text-decoration: none;
-  transition: color 0.15s;
+  transition: color 0.12s ease-out;
 }
-.ai-block-info:hover { color: var(--accent-dk); }
 
 /* Highlight cuando se llega via #descargar-script desde el README */
+/* Usa ::before + opacity para mantener el repaint fuera del flujo principal (GPU-only) */
 @keyframes ai-block-flash {
-  0%, 100% { background: var(--surface); box-shadow: inset 0 0 0 0 var(--accent); }
-  20%, 60% { background: var(--accent-lt); box-shadow: inset 3px 0 0 0 var(--accent); }
+  0%        { opacity: 0; }
+  15%, 55%  { opacity: 1; }
+  100%      { opacity: 0; }
 }
-.ai-block.flash { animation: ai-block-flash 2.4s ease-in-out 1; }
+.ai-block.flash::before {
+  animation: ai-block-flash 2.4s cubic-bezier(0.23, 1, 0.32, 1) 1 forwards;
+}
 
 /* SLICE ITEM */
 .slice-item {
@@ -222,7 +230,6 @@ main {
   transition: background 0.1s;
   user-select: none;
 }
-.slice-item:hover  { background: rgba(255,255,255,0.04); }
 .slice-item.active { background: var(--accent-lt); }
 .slice-item.drag-src      { opacity: 0.35; }
 .slice-item.drag-over-top { border-top: 2px solid var(--accent); }
@@ -232,9 +239,8 @@ main {
   color: var(--border); cursor: grab;
   font-size: 15px; line-height: 1;
   padding: 0 2px; flex-shrink: 0;
-  transition: color 0.1s;
+  transition: color 0.1s ease-out;
 }
-.slice-item:hover .drag-handle { color: var(--text-dim); }
 .drag-handle:active { cursor: grabbing; }
 
 .slice-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
@@ -243,10 +249,9 @@ main {
   background: none; border: none;
   cursor: pointer; font-size: 14px; line-height: 1;
   padding: 0 2px; flex-shrink: 0;
-  transition: color 0.1s; opacity: 0;
+  transition: color 0.1s ease-out, opacity 0.1s ease-out; opacity: 0;
   color: var(--text-dim);
 }
-.slice-item:hover .slice-eye,
 .slice-item.active .slice-eye { opacity: 1; }
 .slice-eye.eye-off { opacity: 1 !important; color: var(--danger) !important; }
 
@@ -271,12 +276,9 @@ main {
 .slice-del {
   background: none; border: none; color: var(--muted);
   cursor: pointer; font-size: 17px; line-height: 1;
-  padding: 0 3px; transition: color 0.1s;
+  padding: 0 3px; transition: color 0.1s ease-out, opacity 0.1s ease-out;
   opacity: 0; flex-shrink: 0;
 }
-.slice-item:hover .slice-del { opacity: 1; }
-.slice-del:hover { color: var(--danger); }
-
 /* CONTENT */
 .content { display: flex; flex-direction: column; overflow: hidden; }
 
@@ -317,10 +319,9 @@ main {
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text-dim);
-  cursor: pointer; transition: all 0.15s; line-height: 1;
+  cursor: pointer; transition: background 0.12s ease-out, border-color 0.12s ease-out, color 0.12s ease-out; line-height: 1;
   white-space: nowrap;
 }
-.toggle-btn:hover:not(:disabled) { border-color: var(--text-dim); color: var(--text); }
 .toggle-btn.active { border-color: var(--accent); color: var(--accent-dk); background: var(--accent-lt); }
 .toggle-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 #overlay-btn {
@@ -328,9 +329,8 @@ main {
   padding: 4px 10px; border-radius: var(--radius);
   background: var(--surface); border: 1px solid var(--border);
   color: var(--text-dim);
-  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  cursor: pointer; transition: background 0.12s ease-out, border-color 0.12s ease-out, color 0.12s ease-out; white-space: nowrap;
 }
-#overlay-btn:hover { border-color: var(--text-dim); color: var(--text); }
 #overlay-btn.active { border-color: var(--accent); color: var(--accent-dk); background: var(--accent-lt); }
 
 /* OPTIONS BAR */
@@ -365,35 +365,46 @@ footer {
   font-family: var(--mono); font-size: 11px; color: var(--text-dim);
   white-space: nowrap; border: 1px solid var(--border);
   padding: 4px 10px; border-radius: var(--radius);
-  text-decoration: none; transition: border-color 0.15s, color 0.15s;
+  text-decoration: none; transition: border-color 0.12s ease-out, color 0.12s ease-out;
 }
-.footer-author:hover { border-color: var(--accent); color: var(--accent-dk); }
 
 .btn-row { display: flex; gap: 8px; flex-shrink: 0; }
 
 button {
   font-family: var(--sans); font-size: 13px; font-weight: 500;
   padding: 7px 17px; border-radius: var(--radius);
-  border: 1px solid transparent; cursor: pointer; transition: all 0.15s; line-height: 1;
+  border: 1px solid transparent; cursor: pointer;
+  transition: background 0.12s ease-out, border-color 0.12s ease-out, color 0.12s ease-out, transform 60ms ease-out;
+  line-height: 1;
 }
 .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-.btn-primary:hover:not(:disabled) { background: var(--accent-dk); border-color: var(--accent-dk); color: #111; }
+.btn-primary:active:not(:disabled) { transform: scale(0.97); }
 .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
 .btn-ghost { background: transparent; color: var(--text); border-color: var(--border); }
-.btn-ghost:hover { border-color: var(--text-dim); color: var(--text); }
+.btn-ghost:active { transform: scale(0.97); }
 
 /* EXPORT DROPDOWN */
 .export-wrap { position: relative; }
 .export-menu {
-  display: none; position: absolute;
+  position: absolute;
   bottom: calc(100% + 6px); right: 0;
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius); overflow: hidden;
   min-width: 210px;
   box-shadow: 0 6px 24px rgba(0,0,0,0.6);
   z-index: 100;
+  /* Entrada desde el trigger (abajo-derecha) */
+  transform-origin: bottom right;
+  opacity: 0;
+  transform: scale(0.95);
+  pointer-events: none;
+  transition: opacity 0.12s ease-out, transform 0.12s ease-out;
 }
-.export-menu.open { display: block; }
+.export-menu.open {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
 .export-opt {
   display: block; width: 100%; text-align: left;
   padding: 11px 15px; background: none; border: none; border-radius: 0;
@@ -401,7 +412,6 @@ button {
   border-bottom: 1px solid var(--border);
 }
 .export-opt:last-child { border-bottom: none; }
-.export-opt:hover { background: var(--accent-lt); color: var(--accent-dk); }
 .export-opt-sub {
   display: block; font-family: var(--mono); font-size: 11px;
   color: var(--text-dim); margin-top: 3px;
@@ -411,11 +421,46 @@ button {
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
 @media (max-width: 700px) {
   main { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
   .sidebar { border-right: none; border-bottom: 1px solid var(--border); max-height: 42vh; }
+}
+
+/* ── Hover guard: evita que touch devices queden pegados en estado :hover ── */
+@media (hover: hover) and (pointer: fine) {
+  #dropzone:hover                    { border-color: var(--accent); background: var(--accent-lt); }
+  .toggle-btn:hover:not(:disabled)   { border-color: var(--text-dim); color: var(--text); }
+  #overlay-btn:hover                 { border-color: var(--text-dim); color: var(--text); }
+  #overlay-btn.active                { border-color: var(--accent); color: var(--accent-dk); background: var(--accent-lt); }
+  .btn-ghost:hover                   { border-color: var(--text-dim); color: var(--text); }
+  .footer-author:hover               { border-color: var(--accent); color: var(--accent-dk); }
+  .slice-item:hover                  { background: rgba(255,255,255,0.04); }
+  .slice-item:hover .drag-handle     { color: var(--text-dim); }
+  .slice-item:hover .slice-eye       { opacity: 1; }
+  .slice-item:hover .slice-del       { opacity: 1; }
+  .slice-del:hover                   { color: var(--danger); }
+  .ai-block-btn:hover                { border-color: var(--accent); background: var(--accent-lt); color: var(--accent-dk); }
+  .ai-block-info:hover               { color: var(--accent-dk); }
+  .export-opt:hover                  { background: var(--accent-lt); color: var(--accent-dk); }
+  ::-webkit-scrollbar-thumb:hover    { background: var(--muted); }
+}
+
+/* ── Reduced motion: mantiene transiciones de color/opacidad (informativas),
+      elimina movimiento y animaciones decorativas ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  /* Excepciones: cambios de color y opacidad que comunican estado se mantienen cortos */
+  #status,
+  .slice-eye,
+  .slice-del,
+  .ai-block-info {
+    transition-duration: 0.1s !important;
+  }
 }
 </style>
 </head>
