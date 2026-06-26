@@ -339,7 +339,15 @@ main {
 }
 .drag-handle:active { cursor: grabbing; }
 
-.slice-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.slice-dot {
+  width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.12s var(--ease-out), box-shadow 0.12s var(--ease-out);
+  outline-offset: 2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .slice-dot:hover { transform: scale(1.45); box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--border); }
+}
 
 .slice-eye {
   background: none; border: none;
@@ -816,6 +824,7 @@ button {
   </div>
   <div class="btn-row">
     <button class="btn-ghost" onclick="confirmClear()" id="btn-clear">Borrar todo</button>
+    <button class="btn-ghost" id="btn-undo" disabled title="Sin acciones para deshacer" onclick="undo()">↩ Deshacer</button>
     <div class="export-wrap">
       <button class="btn-primary" id="btn-export" onclick="toggleExportMenu()" disabled>Exportar ▾</button>
       <div class="export-menu" id="export-menu">
@@ -826,6 +835,10 @@ button {
         <button class="export-opt" onclick="doExport('composition')">
           Composition Preset XML
           <span class="export-opt-sub">Composición → preset de pantalla</span>
+        </button>
+        <button class="export-opt" onclick="exportPNG()">
+          PNG de referencia
+          <span class="export-opt-sub">Mapa visual con nombres y leyenda</span>
         </button>
       </div>
     </div>
@@ -842,6 +855,57 @@ let svgFileName = 'vectorslice';
 let activeIdx   = -1;
 let showOverlay = false;
 let showDimensions = false;
+
+// ── Color picker en slice dot ──
+function pickColor(e, idx) {
+  e.stopPropagation();
+  const input = document.createElement('input');
+  input.type  = 'color';
+  input.value = slices[idx].color;
+  input.style.cssText = 'position:fixed;opacity:0;pointer-events:none;width:0;height:0;top:0;left:0';
+  document.body.appendChild(input);
+  let didChange = false;
+  input.addEventListener('input', ev => {
+    if (!didChange) { pushHistory(); didChange = true; }
+    slices[idx].color = ev.target.value;
+    renderList(); renderPreview();
+  });
+  input.addEventListener('change', () => document.body.removeChild(input));
+  input.click();
+}
+
+// ── Historial de undo (Ctrl+Z) ──
+let _history    = [];   // stack de snapshots
+const MAX_UNDO  = 50;
+
+function pushHistory() {
+  _history.push(JSON.parse(JSON.stringify(slices)));
+  if (_history.length > MAX_UNDO) _history.shift();
+  _updateUndoBtn();
+}
+
+function undo() {
+  if (!_history.length) return;
+  slices = _history.pop();
+  activeIdx = Math.min(activeIdx, slices.length - 1);
+  _updateUndoBtn();
+  renderList(); renderPreview();
+  setStatus(
+    slices.length
+      ? `Deshecho. ${slices.length} slice${slices.length!==1?'s':''}. `
+      : 'Deshecho.',
+    slices.length ? 'ok' : ''
+  );
+  if (!slices.length) document.getElementById('btn-export').disabled = true;
+}
+
+function _updateUndoBtn() {
+  const btn = document.getElementById('btn-undo');
+  if (btn) {
+    btn.disabled = _history.length === 0;
+    btn.title = _history.length ? `Deshacer (${_history.length} paso${_history.length!==1?'s':''})` : 'Sin acciones para deshacer';
+  }
+}
 
 const PALETTE = [
   '#52a868', // verde (accent)
@@ -895,10 +959,27 @@ function loadFile(file) {
   if (!file.name.toLowerCase().endsWith('.svg')) {
     setStatus('Solo se aceptan archivos .svg', 'err'); return;
   }
+  // Limpiar el input ANTES de leer — permite reseleccionar el mismo archivo
+  // sin que el navegador ignore el evento change por "valor sin cambios"
+  fi.value = '';
   svgFileName = file.name.replace(/\.svg$/i, '');
   const r = new FileReader();
   r.onload = e => parseSVG(e.target.result);
+  r.onerror = () => setStatus('Error al leer el archivo.', 'err');
   r.readAsText(file);
+}
+
+// Estado visual del dropzone — compacto tras carga, expandido en vacío
+function setDropzoneState(loaded, name) {
+  const dz    = document.getElementById('dropzone');
+  const label = document.getElementById('dz-file-name');
+  if (loaded) {
+    dz.classList.add('loaded');
+    if (label) label.textContent = (name || 'archivo') + '.svg';
+  } else {
+    dz.classList.remove('loaded');
+    if (label) label.textContent = '—';
+  }
 }
 
 // ══════════════════════════════════════════════
@@ -920,6 +1001,50 @@ function svgUnitToPx(str) {
     case '':    return v;
     default:    return null;   // em/rem/% no se pueden resolver sin contexto
   }
+}
+
+// ══════════════════════════════════════════════
+//  EXPAND <use> → <symbol> (pre-proceso del DOM)
+// ══════════════════════════════════════════════
+function expandUseElements(doc, svgEl) {
+  // Construir mapa id → elemento <symbol> o <g> del <defs>
+  const defs = {};
+  doc.querySelectorAll('defs [id], symbol[id]').forEach(el => {
+    defs[el.getAttribute('id')] = el;
+  });
+
+  svgEl.querySelectorAll('use').forEach(useEl => {
+    const href = useEl.getAttribute('href') || useEl.getAttribute('xlink:href') || '';
+    const refId = href.startsWith('#') ? href.slice(1) : href;
+    const ref = defs[refId] || doc.getElementById(refId);
+    if (!ref) return;
+
+    // Clonar el contenido del símbolo / grupo referenciado
+    const g = doc.createElementNS('http://www.w3.org/2000/svg', 'g');
+
+    // Herencia de nombre: id/label del <use> tiene prioridad
+    const nameAttrs = ['id','inkscape:label','aria-label','data-name'];
+    nameAttrs.forEach(attr => {
+      const v = useEl.getAttribute(attr) || ref.getAttribute(attr);
+      if (v) g.setAttribute(attr, v);
+    });
+
+    // Aplicar transformación del <use> (x, y, transform)
+    const x = +useEl.getAttribute('x') || 0;
+    const y = +useEl.getAttribute('y') || 0;
+    const t = useEl.getAttribute('transform') || '';
+    const translate = (x || y) ? `translate(${x},${y})` : '';
+    const combined  = [translate, t].filter(Boolean).join(' ');
+    if (combined) g.setAttribute('transform', combined);
+
+    // Copiar hijos del símbolo (el <symbol> en sí no se renderiza)
+    const source = ref.tagName.toLowerCase() === 'symbol' ? ref : ref;
+    Array.from(source.children).forEach(child => {
+      g.appendChild(child.cloneNode(true));
+    });
+
+    useEl.parentNode.replaceChild(g, useEl);
+  });
 }
 
 function parseSVG(text) {
@@ -956,6 +1081,11 @@ function parseSVG(text) {
   document.getElementById('opt-h').value = Math.round(svgVB.h);
 
   slices = []; let idx = 0;
+
+  // Expandir <use> → <symbol> antes de extraer shapes.
+  // Illustrator y Inkscape los usan frecuentemente para elementos reutilizados.
+  expandUseElements(doc, svgEl);
+
   doc.querySelectorAll('path,rect,polygon,polyline,ellipse,circle').forEach(el => {
     const pts = extractPoints(el);
     if (pts && pts.length >= 3) {
@@ -983,10 +1113,18 @@ function parseSVG(text) {
 }
 
 function getName(el, i) {
+  // Cascada de fuentes de nombre — de más a menos significativa.
+  // Las clases tipo "st0", "st1"… son estilos automáticos de Illustrator, se descartan.
+  const isIllustratorClass = s => /^st\d+$/.test(s.trim());
+
   const raw = el.getAttribute('id')
     || el.getAttribute('inkscape:label')
+    || el.getAttribute('aria-label')
     || el.getAttribute('data-name')
-    || el.getAttribute('class')?.split(' ')[0]
+    || (() => {
+         const cls = (el.getAttribute('class') || '').split(/\s+/).find(c => c && !isIllustratorClass(c));
+         return cls || '';
+       })()
     || '';
   return sanitize(raw, i);
 }
@@ -1103,7 +1241,12 @@ function renderList() {
          onclick="handleItemClick(event,${i})"
          style="animation: slice-in 0.22s var(--ease-out,cubic-bezier(0.23,1,0.32,1)) ${i * 35}ms both">
       <span class="drag-handle" title="Reordenar">⠿</span>
-      <div class="slice-dot" style="background:${s.color};opacity:${s.visible?1:0.3}"></div>
+      <div class="slice-dot"
+           style="background:${s.color};opacity:${s.visible?1:0.3}"
+           onclick="pickColor(event,${i})"
+           role="button" tabindex="0"
+           aria-label="Color de ${esc(s.name)} — click para cambiar"
+           onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickColor(event,${i})}"></div>
       <div class="slice-info">
         <div class="slice-name" ondblclick="startRename(event,${i})"
              style="opacity:${s.visible?1:0.4}">${esc(s.name)}</div>
@@ -1159,6 +1302,7 @@ function onDrop(e) {
   const before = e.clientY < rect.top + rect.height / 2;
   e.currentTarget.classList.remove('drag-over-top','drag-over-bot');
   if (dragSrcIdx === null || dragSrcIdx === targetIdx) return;
+  pushHistory();
   const moved = slices.splice(dragSrcIdx, 1)[0];
   let insertAt = targetIdx > dragSrcIdx ? targetIdx - 1 : targetIdx;
   if (!before) insertAt++;
@@ -1184,7 +1328,9 @@ function startRename(e, i) {
   nameEl.replaceWith(input);
   input.focus(); input.select();
   const commit = () => {
-    slices[i].name = sanitize(input.value.trim(), i) || current;
+    const next = sanitize(input.value.trim(), i) || current;
+    if (next !== current) pushHistory();
+    slices[i].name = next;
     renderList(); renderPreview();
   };
   input.addEventListener('blur', commit);
@@ -1198,6 +1344,7 @@ function startRename(e, i) {
 // ── Visibility ──
 function toggleVisible(e, i) {
   e.stopPropagation();
+  pushHistory();
   slices[i].visible = !slices[i].visible;
   renderList(); renderPreview();
 }
@@ -1417,7 +1564,9 @@ function toggleDimensions() {
 //  INTERACTIONS
 // ══════════════════════════════════════════════
 function removeSlice(e, i) {
-  e.stopPropagation(); slices.splice(i,1);
+  e.stopPropagation();
+  pushHistory();
+  slices.splice(i,1);
   if (activeIdx >= slices.length) activeIdx = slices.length-1;
   renderList(); renderPreview();
   if (!slices.length) {
@@ -1801,6 +1950,171 @@ window.addEventListener('hashchange', () => {
 });
 
 window.addEventListener('resize',()=>{if(slices.length)renderPreview();});
+
+// Ctrl+Z / Cmd+Z global — ignorar si el foco está en un input de texto
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+    const tag = document.activeElement?.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+    e.preventDefault();
+    undo();
+  }
+});
+
+// ── PNG de referencia ──────────────────────────────────────────────────────
+function exportPNG() {
+  if (!slices.length) return;
+  toggleExportMenu(); // cerrar dropdown
+
+  const SCALE    = 2;             // resolución retina
+  const LEG_W    = 200;           // ancho panel leyenda (px lógicos)
+  const PAD      = 20;
+  const visibles = slices.filter(s => s.visible);
+
+  // Canvas del mapa
+  const mapW = Math.round(svgVB.w);
+  const mapH = Math.round(svgVB.h);
+
+  const totalW = (mapW + LEG_W) * SCALE;
+  const totalH = mapH * SCALE;
+
+  const oc  = document.createElement('canvas');
+  oc.width  = totalW;
+  oc.height = totalH;
+  const ctx = oc.getContext('2d');
+
+  // ── Fondo
+  ctx.fillStyle = '#131614';
+  ctx.fillRect(0, 0, totalW, totalH);
+
+  // ── Cuadrícula tenue (misma que en preview)
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 1;
+  const gStep = Math.round(Math.max(mapW, mapH) / 10) * SCALE;
+  for (let x = 0; x < mapW * SCALE; x += gStep) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, mapH * SCALE); ctx.stroke(); }
+  for (let y = 0; y < mapH * SCALE; y += gStep) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(mapW * SCALE, y); ctx.stroke(); }
+
+  // ── Borde del artboard
+  ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+  ctx.lineWidth = 1 * SCALE;
+  ctx.strokeRect(0, 0, mapW * SCALE, mapH * SCALE);
+
+  // Helpers de proyección
+  const px = x => (x - svgVB.x) / svgVB.w * mapW * SCALE;
+  const py = y => (y - svgVB.y) / svgVB.h * mapH * SCALE;
+
+  // ── Dibujar slices
+  visibles.forEach(s => {
+    if (s.points.length < 3) return;
+    ctx.beginPath();
+    s.points.forEach(([x, y], i) => i === 0 ? ctx.moveTo(px(x), py(y)) : ctx.lineTo(px(x), py(y)));
+    ctx.closePath();
+
+    // Fill translúcido
+    ctx.fillStyle = s.color + '44';
+    ctx.fill();
+
+    // Borde sólido
+    ctx.strokeStyle = s.color;
+    ctx.lineWidth   = 1.5 * SCALE;
+    ctx.stroke();
+
+    // Centroide para el label
+    const xs = s.points.map(p => px(p[0]));
+    const ys = s.points.map(p => py(p[1]));
+    const cx = (Math.min(...xs) + Math.max(...xs)) / 2;
+    const cy = (Math.min(...ys) + Math.max(...ys)) / 2;
+
+    const fs = 10 * SCALE;
+    ctx.font         = `500 ${fs}px "JetBrains Mono", monospace`;
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+
+    // Sombra para legibilidad
+    ctx.shadowColor   = 'rgba(0,0,0,0.85)';
+    ctx.shadowBlur    = 6 * SCALE;
+    ctx.fillStyle     = '#ffffff';
+    ctx.fillText(s.name, cx, cy);
+    ctx.shadowBlur    = 0;
+  });
+
+  // ── Panel leyenda
+  const lx = mapW * SCALE;        // x inicio del panel
+  ctx.fillStyle = '#1b1e1b';
+  ctx.fillRect(lx, 0, LEG_W * SCALE, totalH);
+
+  // Línea separadora
+  ctx.fillStyle = '#303530';
+  ctx.fillRect(lx, 0, 1 * SCALE, totalH);
+
+  // Título leyenda
+  ctx.font         = `600 ${9 * SCALE}px "JetBrains Mono", monospace`;
+  ctx.textAlign    = 'left';
+  ctx.textBaseline = 'top';
+  ctx.fillStyle    = '#8a928a';
+  ctx.letterSpacing = `${0.06 * SCALE}px`;
+  ctx.fillText('SLICES', lx + PAD * SCALE, PAD * SCALE);
+  ctx.letterSpacing = '0px';
+
+  // Dimensiones del doc
+  ctx.font      = `400 ${8.5 * SCALE}px "JetBrains Mono", monospace`;
+  ctx.fillStyle = '#52a868';
+  ctx.fillText(`${mapW} × ${mapH} px`, lx + PAD * SCALE, (PAD + 14) * SCALE);
+
+  // Items de la leyenda
+  const itemH = 22 * SCALE;
+  const startY = (PAD + 34) * SCALE;
+  const maxItems = Math.floor((totalH - startY - PAD * SCALE) / itemH);
+
+  visibles.slice(0, maxItems).forEach((s, i) => {
+    const iy = startY + i * itemH;
+    const dotR = 4 * SCALE;
+    const dotX = lx + (PAD + dotR) * SCALE;
+    const dotY = iy + itemH / 2;
+
+    // Dot de color
+    ctx.beginPath();
+    ctx.arc(dotX, dotY, dotR, 0, Math.PI * 2);
+    ctx.fillStyle = s.color;
+    ctx.fill();
+
+    // Nombre
+    ctx.font         = `400 ${9.5 * SCALE}px "JetBrains Mono", monospace`;
+    ctx.fillStyle    = '#eaf0ea';
+    ctx.textAlign    = 'left';
+    ctx.textBaseline = 'middle';
+
+    const maxChars = Math.floor((LEG_W - PAD * 2 - dotR * 2 - 6) / (5.8));
+    const label = s.name.length > maxChars ? s.name.slice(0, maxChars - 1) + '…' : s.name;
+    ctx.fillText(label, dotX + dotR + 6 * SCALE, dotY);
+  });
+
+  if (visibles.length > maxItems) {
+    ctx.font      = `400 ${8.5 * SCALE}px "JetBrains Mono", monospace`;
+    ctx.fillStyle = '#8a928a';
+    ctx.textBaseline = 'top';
+    ctx.fillText(`+${visibles.length - maxItems} más…`, lx + PAD * SCALE, startY + maxItems * itemH);
+  }
+
+  // ── Marca de agua
+  ctx.font         = `400 ${8 * SCALE}px "JetBrains Mono", monospace`;
+  ctx.fillStyle    = '#303530';
+  ctx.textAlign    = 'right';
+  ctx.textBaseline = 'bottom';
+  ctx.fillText('VectorSlice · javitatay.github.io', totalW - PAD * SCALE / 2, totalH - 6 * SCALE);
+
+  // ── Descarga
+  oc.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a   = document.createElement('a');
+    a.href     = url;
+    a.download = `${svgFileName}-referencia.png`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  }, 'image/png');
+
+  setStatus('PNG de referencia generado.', 'ok');
+}
 
 // ── MODAL AYUDA INSTALACIÓN ──────────────────────────────────────────────
 let _helpPrevFocus = null;
