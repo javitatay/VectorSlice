@@ -40,6 +40,21 @@ button, [role="button"], input, a {
   --mono:      'JetBrains Mono', monospace;
   --sans:      'Inter', sans-serif;
   --radius:    4px;
+  /* Emil Kowalski — custom easing curves, más punch que los built-in */
+  --ease-out:     cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out:  cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* Stagger de entrada para items de lista */
+@keyframes slice-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+/* Entrada del dup-warning */
+@keyframes warn-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0);    }
 }
 
 html, body { height: 100%; }
@@ -128,8 +143,8 @@ main {
   padding: 22px 16px;
   text-align: center;
   cursor: pointer;
-  transition: border-color 0.12s ease-out, background 0.12s ease-out,
-              padding 0.15s ease-out, margin 0.15s ease-out;
+  transition: border-color 0.12s var(--ease-out), background 0.12s var(--ease-out),
+              padding 0.15s var(--ease-out), margin 0.15s var(--ease-out);
   flex-shrink: 0;
 }
 /* .drag-over es JS-triggered (dragover event) — fuera del hover guard */
@@ -173,7 +188,7 @@ main {
 .dz-replace {
   font-family: var(--mono); font-size: 11px;
   color: var(--text-dim); flex-shrink: 0;
-  transition: color 0.12s ease-out;
+  transition: color 0.12s var(--ease-out);
 }
 
 /* Warning de nombres duplicados */
@@ -186,6 +201,10 @@ main {
   background: rgba(224, 148, 58, 0.08);
   border-bottom: 1px solid rgba(224, 148, 58, 0.18);
   flex-shrink: 0;
+}
+.dup-warning.visible {
+  display: flex;
+  animation: warn-in 0.2s var(--ease-out) both;
 }
 .dup-warning svg { flex-shrink: 0; }
 
@@ -273,7 +292,7 @@ main {
   font-family: var(--sans); font-size: 12px; font-weight: 500;
   cursor: pointer;
   text-decoration: none;
-  transition: background 0.12s ease-out, border-color 0.12s ease-out, color 0.12s ease-out;
+  transition: background 0.12s var(--ease-out), border-color 0.12s var(--ease-out), color 0.12s var(--ease-out);
 }
 .ai-block-btn svg { width: 13px; height: 13px; }
 .ai-block-info {
@@ -283,7 +302,7 @@ main {
   color: var(--text-dim);
   margin-top: 8px;
   text-decoration: none;
-  transition: color 0.12s ease-out;
+  transition: color 0.12s var(--ease-out);
 }
 
 /* Highlight cuando se llega via #descargar-script desde el README */
@@ -316,7 +335,7 @@ main {
   color: var(--border); cursor: grab;
   font-size: 15px; line-height: 1;
   padding: 0 2px; flex-shrink: 0;
-  transition: color 0.1s ease-out;
+  transition: color 0.1s var(--ease-out);
 }
 .drag-handle:active { cursor: grabbing; }
 
@@ -326,7 +345,7 @@ main {
   background: none; border: none;
   cursor: pointer; font-size: 14px; line-height: 1;
   padding: 0 2px; flex-shrink: 0;
-  transition: color 0.1s ease-out, opacity 0.1s ease-out; opacity: 0;
+  transition: color 0.1s var(--ease-out), opacity 0.1s var(--ease-out); opacity: 0;
   color: var(--text-dim);
 }
 .slice-item.active .slice-eye { opacity: 1; }
@@ -355,7 +374,7 @@ main {
 .slice-del {
   background: none; border: none; color: var(--muted);
   cursor: pointer; font-size: 17px; line-height: 1;
-  padding: 0 3px; transition: color 0.1s ease-out, opacity 0.1s ease-out;
+  padding: 0 3px; transition: color 0.1s var(--ease-out), opacity 0.1s var(--ease-out);
   opacity: 0; flex-shrink: 0;
 }
 /* CONTENT */
@@ -398,7 +417,7 @@ main {
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text-dim);
-  cursor: pointer; transition: background 0.12s ease-out, border-color 0.12s ease-out, color 0.12s ease-out; line-height: 1;
+  cursor: pointer; transition: background 0.12s var(--ease-out), border-color 0.12s var(--ease-out), color 0.12s var(--ease-out); line-height: 1;
   white-space: nowrap;
 }
 .toggle-btn.active { border-color: var(--accent); color: var(--accent-dk); background: var(--accent-lt); }
@@ -408,7 +427,7 @@ main {
   padding: 4px 10px; border-radius: var(--radius);
   background: var(--surface); border: 1px solid var(--border);
   color: var(--text-dim);
-  cursor: pointer; transition: background 0.12s ease-out, border-color 0.12s ease-out, color 0.12s ease-out; white-space: nowrap;
+  cursor: pointer; transition: background 0.12s var(--ease-out), border-color 0.12s var(--ease-out), color 0.12s var(--ease-out); white-space: nowrap;
 }
 #overlay-btn.active { border-color: var(--accent); color: var(--accent-dk); background: var(--accent-lt); }
 
@@ -440,7 +459,12 @@ footer {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
 }
 .footer-left { display: flex; align-items: center; gap: 20px; flex: 1; min-width: 0; }
-#status { font-family: var(--mono); font-size: 12px; color: var(--text-dim); }
+#btn-clear { transition: background 0.2s var(--ease-out), border-color 0.2s var(--ease-out), color 0.2s var(--ease-out); }
+#btn-clear[data-confirm="1"] {
+  border-color: var(--danger);
+  color: var(--danger);
+  background: rgba(224, 85, 69, 0.08);
+}
 #status.ok  { color: var(--accent-dk); }
 #status.err { color: var(--danger); }
 
@@ -448,7 +472,7 @@ footer {
   font-family: var(--mono); font-size: 11px; color: var(--text-dim);
   white-space: nowrap; border: 1px solid var(--border);
   padding: 4px 10px; border-radius: var(--radius);
-  text-decoration: none; transition: border-color 0.12s ease-out, color 0.12s ease-out;
+  text-decoration: none; transition: border-color 0.12s var(--ease-out), color 0.12s var(--ease-out);
 }
 
 .btn-row { display: flex; gap: 8px; flex-shrink: 0; }
@@ -457,10 +481,10 @@ button {
   font-family: var(--sans); font-size: 13px; font-weight: 500;
   padding: 7px 17px; border-radius: var(--radius);
   border: 1px solid transparent; cursor: pointer;
-  transition: background 0.12s ease-out, border-color 0.12s ease-out, color 0.12s ease-out, transform 60ms ease-out;
+  transition: background 0.12s var(--ease-out), border-color 0.12s var(--ease-out), color 0.12s var(--ease-out), transform 60ms ease-out;
   line-height: 1;
 }
-.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-primary { background: var(--accent); color: #0d1a10; border-color: var(--accent); }
 .btn-primary:active:not(:disabled) { transform: scale(0.97); }
 .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
 .btn-ghost { background: transparent; color: var(--text); border-color: var(--border); }
@@ -481,12 +505,15 @@ button {
   opacity: 0;
   transform: scale(0.95);
   pointer-events: none;
-  transition: opacity 0.12s ease-out, transform 0.12s ease-out;
+  /* Exit rápido (100ms) — usuario ya decidió */
+  transition: opacity 0.1s var(--ease-out), transform 0.1s var(--ease-out);
 }
 .export-menu.open {
   opacity: 1;
   transform: scale(1);
   pointer-events: auto;
+  /* Enter más lento (150ms) — sistema responde, no hay prisa */
+  transition: opacity 0.15s var(--ease-out), transform 0.15s var(--ease-out);
 }
 .export-opt {
   display: block; width: 100%; text-align: left;
@@ -518,6 +545,7 @@ button {
   .toggle-btn:hover:not(:disabled)   { border-color: var(--text-dim); color: var(--text); }
   #overlay-btn:hover                 { border-color: var(--text-dim); color: var(--text); }
   #overlay-btn.active                { border-color: var(--accent); color: var(--accent-dk); background: var(--accent-lt); }
+  .btn-primary:hover:not(:disabled)  { background: var(--accent-dk); border-color: var(--accent-dk); color: #0d1a10; }
   .btn-ghost:hover                   { border-color: var(--text-dim); color: var(--text); }
   .footer-author:hover               { border-color: var(--accent); color: var(--accent-dk); }
   .slice-item:hover                  { background: rgba(255,255,255,0.04); }
@@ -529,6 +557,117 @@ button {
   .ai-block-info:hover               { color: var(--accent-dk); }
   .export-opt:hover                  { background: var(--accent-lt); color: var(--accent-dk); }
   ::-webkit-scrollbar-thumb:hover    { background: var(--muted); }
+}
+
+/* ── Touch targets WCAG 2.5.5: mínimo 44×44px en dispositivos de toque ── */
+@media (pointer: coarse) {
+  .slice-eye,
+  .slice-del {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+  button.btn-primary,
+  button.btn-ghost,
+  button#btn-clear {
+    min-height: 44px;
+    padding: 10px 20px;
+  }
+  .toggle-btn,
+  #overlay-btn {
+    min-height: 36px;
+    padding: 6px 12px;
+  }
+}
+
+/* ── MODAL DE AYUDA — Instalación JSX ── */
+.help-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  z-index: 200;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.18s var(--ease-out);
+}
+.help-backdrop.open { opacity: 1; pointer-events: auto; }
+.help-panel {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  width: 100%; max-width: 480px; max-height: calc(100vh - 40px); overflow-y: auto;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.8);
+  transform: scale(0.95) translateY(8px);
+  transition: transform 0.2s var(--ease-out);
+}
+.help-backdrop.open .help-panel { transform: scale(1) translateY(0); }
+.help-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 16px 18px 14px; border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; background: var(--surface); z-index: 1;
+}
+.help-header-icon { display: flex; align-items: center; color: var(--accent-dk); flex-shrink: 0; }
+.help-header-icon svg { width: 15px; height: 15px; fill: currentColor; }
+.help-title { font-size: 14px; font-weight: 600; color: var(--text); flex: 1; }
+.help-close {
+  background: none; border: none; color: var(--muted); cursor: pointer;
+  font-size: 18px; line-height: 1; padding: 4px 6px; border-radius: var(--radius);
+  transition: color 0.12s var(--ease-out), background 0.12s var(--ease-out); flex-shrink: 0;
+}
+.help-body { padding: 20px 18px 24px; display: flex; flex-direction: column; gap: 22px; }
+.help-section-title {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--accent-dk); font-family: var(--mono); margin-bottom: 10px;
+}
+.help-step { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 10px; }
+.help-step:last-child { margin-bottom: 0; }
+.help-step-num {
+  flex-shrink: 0; width: 20px; height: 20px;
+  background: var(--accent-lt); color: var(--accent-dk);
+  border-radius: 50%; font-family: var(--mono); font-size: 11px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; margin-top: 1px;
+}
+.help-step-text { font-size: 13px; color: var(--text-dim); line-height: 1.55; }
+.help-step-text b { color: var(--text); font-weight: 600; }
+.help-step-text code {
+  font-family: var(--mono); font-size: 11px;
+  background: var(--bg); color: var(--accent-dk);
+  padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border);
+}
+.help-path-block {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden; margin-top: 8px;
+}
+.help-path-os {
+  padding: 6px 12px 5px; font-family: var(--mono); font-size: 10px;
+  color: var(--muted); letter-spacing: 0.05em; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 6px;
+}
+.help-path-os svg { width: 12px; height: 12px; fill: currentColor; flex-shrink: 0; }
+.help-path-row { display: flex; align-items: stretch; }
+.help-path-text {
+  font-family: var(--mono); font-size: 11px; color: var(--text-dim);
+  padding: 8px 12px; flex: 1; min-width: 0; word-break: break-all; line-height: 1.5;
+}
+.help-copy-btn {
+  flex-shrink: 0; background: none; border: none;
+  border-left: 1px solid var(--border); color: var(--muted); cursor: pointer;
+  padding: 0 12px; font-family: var(--mono); font-size: 11px;
+  transition: color 0.12s var(--ease-out), background 0.12s var(--ease-out);
+  display: flex; align-items: center; gap: 5px; white-space: nowrap;
+}
+.help-copy-btn svg { width: 12px; height: 12px; flex-shrink: 0; }
+.help-divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+.help-note {
+  font-size: 12px; color: var(--muted); background: var(--bg);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 10px 13px; line-height: 1.55;
+}
+.help-note b { color: var(--text-dim); font-weight: 600; }
+@media (hover: hover) and (pointer: fine) {
+  .help-close:hover     { color: var(--text); background: rgba(255,255,255,0.06); }
+  .help-copy-btn:hover  { color: var(--accent-dk); background: var(--accent-lt); }
 }
 
 /* ── Reduced motion: mantiene transiciones de color/opacidad (informativas),
@@ -624,11 +763,11 @@ button {
         </svg>
         <span>Descargar VectorSlice.jsx</span>
       </button>
-      <a class="ai-block-info"
-         href="https://github.com/javitatay/VectorSlice/blob/main/VectorSlice.jsx"
-         target="_blank" rel="noopener">
+      <button class="ai-block-info" type="button"
+              onclick="openHelpModal()"
+              aria-haspopup="dialog">
         Cómo instalar y usar →
-      </a>
+      </button>
     </div>
   </div>
 
@@ -942,7 +1081,14 @@ function renderList() {
   slices.forEach(s => { nameCount[s.name] = (nameCount[s.name] || 0) + 1; });
   const hasDups = Object.values(nameCount).some(c => c > 1);
   const dupEl = document.getElementById('dup-warning');
-  if (dupEl) dupEl.style.display = hasDups ? 'flex' : 'none';
+  if (dupEl) {
+    if (hasDups) {
+      dupEl.classList.add('visible');
+    } else {
+      dupEl.classList.remove('visible');
+      dupEl.style.display = 'none';
+    }
+  }
 
   const hint = document.getElementById('slices-hint');
   if (!slices.length) {
@@ -954,7 +1100,8 @@ function renderList() {
   list.innerHTML = slices.map((s, i) => `
     <div class="slice-item${activeIdx===i?' active':''}"
          data-idx="${i}" draggable="true"
-         onclick="handleItemClick(event,${i})">
+         onclick="handleItemClick(event,${i})"
+         style="animation: slice-in 0.22s var(--ease-out,cubic-bezier(0.23,1,0.32,1)) ${i * 35}ms both">
       <span class="drag-handle" title="Reordenar">⠿</span>
       <div class="slice-dot" style="background:${s.color};opacity:${s.visible?1:0.3}"></div>
       <div class="slice-info">
@@ -1091,8 +1238,19 @@ function renderPreview() {
   // mantener el canvas si ya existe
   let canvas = document.getElementById('preview-canvas');
   const hadCanvas = !!canvas;
-  if (!canvas) { canvas = document.createElement('canvas'); canvas.id = 'preview-canvas'; }
+  if (!canvas) {
+    canvas = document.createElement('canvas');
+    canvas.id = 'preview-canvas';
+    canvas.setAttribute('role', 'img');
+  }
   canvas.width = cW; canvas.height = cH;
+  // Actualizar descripción accesible según estado actual
+  const visibleSlices = slices.filter(s => s.visible);
+  canvas.setAttribute('aria-label',
+    slices.length
+      ? `Vista previa: ${visibleSlices.length} de ${slices.length} slice${slices.length!==1?'s':''} visible${visibleSlices.length!==1?'s':''}. Documento ${Math.round(svgVB.w)}×${Math.round(svgVB.h)} px.`
+      : 'Vista previa vacía — carga un SVG para ver los slices.'
+  );
 
   if (!hadCanvas) {
     area.innerHTML = '';
@@ -1643,6 +1801,175 @@ window.addEventListener('hashchange', () => {
 });
 
 window.addEventListener('resize',()=>{if(slices.length)renderPreview();});
+
+// ── MODAL AYUDA INSTALACIÓN ──────────────────────────────────────────────
+let _helpPrevFocus = null;
+
+function openHelpModal() {
+  _helpPrevFocus = document.activeElement;
+  const backdrop = document.getElementById('help-backdrop');
+  backdrop.classList.add('open');
+  // Foco en el botón de cierre tras la transición
+  setTimeout(() => {
+    const closeBtn = document.getElementById('help-close-btn');
+    if (closeBtn) closeBtn.focus();
+  }, 50);
+  // Cerrar al hacer click en el backdrop (fuera del panel)
+  backdrop.addEventListener('click', _onBackdropClick);
+  // Cerrar con Escape
+  document.addEventListener('keydown', _onModalKeydown);
+  // Trap de foco
+  document.addEventListener('keydown', _onFocusTrap);
+}
+
+function closeHelpModal() {
+  const backdrop = document.getElementById('help-backdrop');
+  backdrop.classList.remove('open');
+  backdrop.removeEventListener('click', _onBackdropClick);
+  document.removeEventListener('keydown', _onModalKeydown);
+  document.removeEventListener('keydown', _onFocusTrap);
+  // Devolver foco al trigger
+  if (_helpPrevFocus) { _helpPrevFocus.focus(); _helpPrevFocus = null; }
+}
+
+function _onBackdropClick(e) {
+  if (e.target === document.getElementById('help-backdrop')) closeHelpModal();
+}
+
+function _onModalKeydown(e) {
+  if (e.key === 'Escape') { e.preventDefault(); closeHelpModal(); }
+}
+
+function _onFocusTrap(e) {
+  if (e.key !== 'Tab') return;
+  const panel = document.getElementById('help-panel');
+  const focusable = Array.from(panel.querySelectorAll(
+    'button, [href], input, [tabindex]:not([tabindex="-1"])'
+  )).filter(el => !el.disabled);
+  if (!focusable.length) return;
+  const first = focusable[0], last = focusable[focusable.length - 1];
+  if (e.shiftKey) {
+    if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+  } else {
+    if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+}
+
+function copyPath(elemId, btn) {
+  const text = document.getElementById(elemId).textContent.trim();
+  navigator.clipboard.writeText(text).then(() => {
+    const span = btn.querySelector('span');
+    const svg  = btn.querySelector('svg');
+    const orig = span.textContent;
+    span.textContent = 'Copiado';
+    btn.style.color = 'var(--accent-dk)';
+    svg.style.opacity = '0';
+    setTimeout(() => {
+      span.textContent = orig;
+      btn.style.color = '';
+      svg.style.opacity = '';
+    }, 1800);
+  }).catch(() => {
+    // Fallback para navegadores sin clipboard API
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  });
+}
 </script>
+<!-- ── MODAL AYUDA INSTALACIÓN JSX ── -->
+<div class="help-backdrop" id="help-backdrop" role="dialog" aria-modal="true"
+     aria-labelledby="help-modal-title" aria-describedby="help-modal-desc">
+  <div class="help-panel" id="help-panel">
+    <div class="help-header">
+      <span class="help-header-icon" aria-hidden="true">
+        <svg viewBox="0 0 16 16"><path d="M3 1h7l3 3v11H3V1zm6.5.5V4H12L9.5 1.5zM5 7h6v1H5V7zm0 2.5h6v1H5v-1zm0 2.5h4v1H5v-1z"/></svg>
+      </span>
+      <span class="help-title" id="help-modal-title">Instalar VectorSlice.jsx</span>
+      <button class="help-close" id="help-close-btn" aria-label="Cerrar ayuda" onclick="closeHelpModal()">×</button>
+    </div>
+
+    <div class="help-body" id="help-modal-desc">
+
+      <!-- OPCIÓN A -->
+      <div>
+        <div class="help-section-title">Opción A — Uso puntual</div>
+        <div class="help-step">
+          <span class="help-step-num">1</span>
+          <span class="help-step-text">Descarga el archivo <b>VectorSlice.jsx</b> con el botón de arriba.</span>
+        </div>
+        <div class="help-step">
+          <span class="help-step-num">2</span>
+          <span class="help-step-text">Abre tu documento en <b>Adobe Illustrator</b> con los paths a convertir.</span>
+        </div>
+        <div class="help-step">
+          <span class="help-step-num">3</span>
+          <span class="help-step-text">Ve a <code>File → Scripts → Other Script…</code> y selecciona el archivo descargado.</span>
+        </div>
+        <div class="help-step">
+          <span class="help-step-num">4</span>
+          <span class="help-step-text">El script generará el XML y abrirá un diálogo para guardarlo.</span>
+        </div>
+      </div>
+
+      <hr class="help-divider">
+
+      <!-- OPCIÓN B -->
+      <div>
+        <div class="help-section-title">Opción B — Acceso directo desde menú</div>
+        <div class="help-step">
+          <span class="help-step-num">1</span>
+          <span class="help-step-text">Copia <b>VectorSlice.jsx</b> en la carpeta de Scripts de Illustrator según tu sistema:</span>
+        </div>
+
+        <!-- macOS -->
+        <div class="help-path-block">
+          <div class="help-path-os">
+            <svg viewBox="0 0 12 12"><path d="M6 0C4.07 0 2.5 1.57 2.5 3.5c0 .78.26 1.5.69 2.09C1.27 6.34 0 7.93 0 9.75 0 11.55 1.12 12 2.5 12h7C10.88 12 12 11.55 12 9.75c0-1.82-1.27-3.41-3.19-4.16A3.48 3.48 0 0 0 9.5 3.5C9.5 1.57 7.93 0 6 0zm0 1c1.38 0 2.5 1.12 2.5 2.5S7.38 6 6 6 3.5 4.88 3.5 3.5 4.62 1 6 1z"/></svg>
+            macOS
+          </div>
+          <div class="help-path-row">
+            <span class="help-path-text" id="path-mac">/Applications/Adobe Illustrator [versión]/Presets/en_US/Scripts/</span>
+            <button class="help-copy-btn" onclick="copyPath('path-mac', this)" aria-label="Copiar ruta macOS">
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><rect x="4" y="4" width="7" height="7" rx="1"/><path d="M1 8V1h7"/></svg>
+              <span>Copiar</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Windows -->
+        <div class="help-path-block">
+          <div class="help-path-os">
+            <svg viewBox="0 0 12 12"><path d="M0 1.5L5 .75V5.5H0V1.5zm6 0l6-.75V5.5H6V1.5zM0 6.5h5v4.75L0 10.5V6.5zm6 0h6v4l-6-.75V6.5z"/></svg>
+            Windows
+          </div>
+          <div class="help-path-row">
+            <span class="help-path-text" id="path-win">C:\Program Files\Adobe\Adobe Illustrator [versión]\Presets\en_US\Scripts\</span>
+            <button class="help-copy-btn" onclick="copyPath('path-win', this)" aria-label="Copiar ruta Windows">
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><rect x="4" y="4" width="7" height="7" rx="1"/><path d="M1 8V1h7"/></svg>
+              <span>Copiar</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="help-step" style="margin-top:10px">
+          <span class="help-step-num">2</span>
+          <span class="help-step-text"><b>Reinicia Illustrator.</b> El script aparecerá en <code>File → Scripts → VectorSlice</code>.</span>
+        </div>
+      </div>
+
+      <!-- NOTA FINAL -->
+      <div class="help-note">
+        <b>Nota sobre idioma:</b> La ruta usa <code>en_US</code> para instalaciones en inglés.
+        Si tu Illustrator está en otro idioma, sustituye <code>en_US</code> por el código de tu idioma
+        (p. ej. <code>es_ES</code> para español).
+      </div>
+
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
