@@ -246,6 +246,18 @@ vectorslice/
 
 ---
 
+## 🔗 Más herramientas
+
+Otras herramientas para producción de eventos en directo:
+
+- ⏱️ **Tatimer** — Temporizador para el monitor del ponente en shows en vivo. [Ver proyecto](https://github.com/javitatay/Tatimer) · [Demo](https://javitatay.github.io/Tatimer/)
+- 🎪 **Tarimeo** — Diseña y organiza la distribución de tarimas y escenarios. [Ver proyecto](https://github.com/javitatay/Tarimeo) · [Demo](https://javitatay.github.io/Tarimeo/)
+- 📡 **RFTDT** — Consulta de frecuencias TDT libres para microfonía inalámbrica. [Ver proyecto](https://github.com/javitatay/RFTDT) · [Demo](https://javitatay.github.io/RFTDT/)
+- 🎬 **QLab Live Scripts** — Controla PowerPoint, Chrome, Zoom, PDF y Spotify desde QLab 5. [Ver proyecto](https://github.com/javitatay/QLab-Scripts-Live-Events) · [Demo](https://javitatay.github.io/QLab-Scripts-Live-Events/)
+- 🎓 **AVV Lab** — Plataforma educativa interactiva de Animación Visual en Vivo. [Ver proyecto](https://github.com/javitatay/AVV) · [Demo](https://javitatay.github.io/AVV/)
+
+---
+
 ## 📄 Licencia
 
 VectorSlice se distribuye bajo la licencia **[GNU General Public License v3.0](LICENSE)**.
@@ -259,7 +271,7 @@ Eres libre de usar, estudiar, modificar y compartir este software. La única con
 ## ✉️ Contacto
 
 **Javier Tatay Rubio** · Profesor · CFGM Vídeo DJ · Animación Visual en Vivo
-📧 j.tatayrubio@edu.gva.es
+📧 j.tatayrubio@edu.gva.es · javitatay@gmail.com
 [javitatay.github.io](https://javitatay.github.io) · [AVV Lab](https://javitatay.github.io/AVV)
 
 ---
