@@ -292,7 +292,7 @@ main {
   font-family: var(--sans); font-size: 12px; font-weight: 500;
   cursor: pointer;
   text-decoration: none;
-  transition: background 0.12s var(--ease-out), border-color 0.12s var(--ease-out), color 0.12s var(--ease-out);
+  transition: background 0.12s var(--ease-out), border-color 0.12s var(--ease-out), color 0.12s var(--ease-out), transform 0.1s var(--ease-out);
 }
 .ai-block-btn svg { width: 13px; height: 13px; }
 .ai-block-info {
@@ -425,7 +425,7 @@ main {
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text-dim);
-  cursor: pointer; transition: background 0.12s var(--ease-out), border-color 0.12s var(--ease-out), color 0.12s var(--ease-out); line-height: 1;
+  cursor: pointer; transition: background 0.12s var(--ease-out), border-color 0.12s var(--ease-out), color 0.12s var(--ease-out), transform 0.1s var(--ease-out); line-height: 1;
   white-space: nowrap;
 }
 .toggle-btn.active { border-color: var(--accent); color: var(--accent-dk); background: var(--accent-lt); }
@@ -497,6 +497,9 @@ button {
 .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
 .btn-ghost { background: transparent; color: var(--text); border-color: var(--border); }
 .btn-ghost:active { transform: scale(0.97); }
+.ai-block-btn:active:not(:disabled) { transform: scale(0.97); }
+.toggle-btn:active:not(:disabled) { transform: scale(0.97); }
+.help-copy-btn:active { transform: scale(0.97); }
 
 /* EXPORT DROPDOWN */
 .export-wrap { position: relative; }
@@ -662,7 +665,7 @@ button {
   flex-shrink: 0; background: none; border: none;
   border-left: 1px solid var(--border); color: var(--muted); cursor: pointer;
   padding: 0 12px; font-family: var(--mono); font-size: 11px;
-  transition: color 0.12s var(--ease-out), background 0.12s var(--ease-out);
+  transition: color 0.12s var(--ease-out), background 0.12s var(--ease-out), transform 0.1s var(--ease-out);
   display: flex; align-items: center; gap: 5px; white-space: nowrap;
 }
 .help-copy-btn svg { width: 12px; height: 12px; flex-shrink: 0; }
