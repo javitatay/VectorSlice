@@ -544,8 +544,29 @@ button {
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
 @media (max-width: 700px) {
+  html, body { overflow-x: hidden; }
   main { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
   .sidebar { border-right: none; border-bottom: 1px solid var(--border); max-height: 42vh; }
+
+  /* Header: menos padding, el separador y el subtítulo no fuerzan overflow */
+  header { padding: 0 16px; }
+
+  /* Footer: la fila de botones NO puede seguir siendo flex-shrink:0 a este ancho;
+     ocultamos el badge de GitHub (secundario) y dejamos que los botones se compriman */
+  footer { padding: 0 12px; height: auto; min-height: 52px; flex-wrap: wrap; gap: 8px 12px; }
+  .footer-author { display: none; }
+  .footer-left { gap: 8px; }
+  .btn-row { flex-shrink: 1; flex-wrap: wrap; gap: 6px; }
+  .btn-row button { padding: 6px 12px; font-size: 12px; }
+
+  /* Preview drop-hint: en flex column con align-items:center el texto no envuelve
+     y se sale del contenedor — forzamos ancho máximo y permitimos el wrap */
+  .preview-drop-hint { padding: 0 24px; }
+  .preview-drop-hint span { max-width: 220px; text-align: center; white-space: normal; }
+
+  /* Options bar: menos padding lateral para ganar espacio */
+  .options-bar { padding: 11px 16px; }
+  .preview-area { padding: 16px; }
 }
 
 /* ── Hover guard: evita que touch devices queden pegados en estado :hover ── */
@@ -591,6 +612,29 @@ button {
   #overlay-btn {
     min-height: 36px;
     padding: 6px 12px;
+  }
+  .ai-block-btn {
+    min-height: 44px;
+  }
+  .export-opt {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  .help-copy-btn {
+    min-width: 44px;
+    justify-content: center;
+  }
+  .drag-handle {
+    min-width: 32px;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* iOS hace zoom automático al enfocar un input con font-size < 16px */
+  input[type="number"] {
+    font-size: 16px !important;
   }
 }
 
